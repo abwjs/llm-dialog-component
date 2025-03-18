@@ -12,9 +12,12 @@
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "prepare": "husky"
+    "prepare": "husky",
+    "preinstall": "node ./scripts/preinstall.js"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "axios": "^1.8.3",
     "element-plus": "^2.9.6",
     "pinia": "^3.0.1",
     "postcss-nesting": "^13.0.1",
