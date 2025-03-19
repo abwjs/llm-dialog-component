@@ -29,10 +29,10 @@
         </div>
       </div>
       <!-- 按钮 -->
-      <div class="bt">
+      <router-link class="bt" to="/chat">
         <el-button type="primary" plain size="large">开始对话</el-button>
 
-      </div>
+      </router-link>
     </main>
   </div>
 </template>
@@ -155,6 +155,7 @@ main {
 
   //按钮
   .bt {
+    display: block;
     width: 96px;
     height: 40px;
     margin: 100px auto;
