@@ -1,8 +1,9 @@
 <template>
   <div class="Box">
     <!-- 侧边导航栏占位 -->
-    <OffCanvas></OffCanvas>
-    <div class="main" :class="{ Masklayer: NavStore.navbol }">
+    <OffCanvas class="Offcanvas"></OffCanvas>
+    <div class="main">
+      <div class="MaskLayer" v-if="NavStore.navbol" @click="Scale"></div>
       <div class="nav">
         <button class="headerbt" v-if="!NavStore.navbol" @click="Scale"></button>
         <!-- 返回按钮 -->
@@ -29,16 +30,19 @@ import OffCanvas from '@/components/OffCanvas.vue'
 import { ref } from 'vue'
 import useNavStore from '../store/modules/nav'
 const NavStore = useNavStore()
+// 修改导航栏隐藏显示
 const Scale = () => {
   NavStore.$patch((store) => {
     store.navbol = !store.navbol
   })
+
 }
 const text = ref('')
 const sending = () => {
   if (text.value === '') {
   }
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -47,23 +51,38 @@ const sending = () => {
   min-height: 100vh;
 }
 
-.active {
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-}
+
 
 .main {
   position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
-
   background-color: var(--bg-color);
+
+  .MaskLayer {
+    transition: all 0.1s;
+    display: none;
+  }
+
   .nav {
+    display: flex;
+    align-items: center;
+    justify-content: end;
     width: 100%;
-    height: 40px;
+    height: 56px;
+
+    //返回按钮
+    .active {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background-color: rgb(230, 230, 230);
+      transition: all 0.3s;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    }
+
+    //侧边栏按钮
     .headerbt {
       display: none;
       width: 36px;
@@ -79,6 +98,7 @@ const sending = () => {
       }
     }
   }
+
   .Form1 {
     flex: 1;
     display: flex;
@@ -139,10 +159,12 @@ const sending = () => {
 
 //移动端适配
 @media (max-width: 768px) {
+  .main {
+    padding: 0 20px;
   //遮罩层
-  .Masklayer {
-    &::after {
-      content: '';
+
+    .MaskLayer {
+      display: block;
       position: absolute;
       left: 0;
       top: 0;
@@ -151,14 +173,15 @@ const sending = () => {
       height: 100%;
       background-color: rgba(0, 0, 0, 0.5);
     }
-  }
-  .main {
-    padding: 0 20px;
+
     .nav {
+      justify-content: space-between;
+
       .headerbt {
         display: block !important;
       }
     }
+
     .Form1 {
       width: 100%;
 

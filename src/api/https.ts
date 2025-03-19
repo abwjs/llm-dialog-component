@@ -16,7 +16,7 @@ export async function get<T>(url: string): Promise<T> {
   return fetchApi<T>(url, { method: 'GET' })
 }
 
-export async function post<T>(url: string, body:object, options?: RequestInit): Promise<T> {
+export async function post<T>(url: string, body: object, options?: RequestInit): Promise<T> {
   return fetchApi<T>(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

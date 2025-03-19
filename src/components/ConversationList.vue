@@ -8,13 +8,11 @@
         <h2>JS代码问题回答介绍解释回答</h2>
       </div>
       <!-- ... -->
-      <div class="ic" @click="show">
-        <el-icon>
-          <More />
-        </el-icon>
+      <div class="ic" @click.stop="show">
+        <el-icon><MoreFilled /></el-icon>
       </div>
     </div>
-    <div class="Popup" v-if="Popupbol" ref="Popup">
+    <div class="Popup" v-if="Popupbol" ref="popupRef">
       <li>
         <el-icon>
           <EditPen size="20px" />
@@ -32,22 +30,35 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-// 控制弹出框是否显示
+import { ref, onBeforeUnmount,nextTick } from 'vue'
+
 const Popupbol = ref(false)
-const show = () => {
-  Popupbol.value = true
-  document.addEventListener('click', (e) => {
-    ClickOutside(e)
-  })
-}
-// 点击框外隐藏
-const ClickOutside = (e: Event) => {
-  const Popup = document.querySelector('.Popup') as Element
-  if (!Popup.contains(e.target as null | Node)) {
+const popupRef = ref<HTMLElement | null>(null)
+
+// 点击事件处理函数
+const handleClickOutside = (e: Event) => {
+  if (!popupRef.value || !popupRef.value.contains(e.target as Node)) {
     Popupbol.value = false
+    document.removeEventListener('click', handleClickOutside)
   }
 }
+
+const show = () => {
+  Popupbol.value = !Popupbol.value
+  if (Popupbol.value) {
+    // 使用 setTimeout 确保弹出框已渲染
+    nextTick(() => {
+      document.addEventListener('click', handleClickOutside)
+    })
+  } else {
+    document.removeEventListener('click', handleClickOutside)
+  }
+}
+
+// 组件卸载前移除监听
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <style scoped lang="scss">
@@ -56,6 +67,7 @@ const ClickOutside = (e: Event) => {
 
   .Popup {
     display: flex;
+    z-index: 999;
     flex-direction: column;
     padding: 3px;
     position: absolute;
