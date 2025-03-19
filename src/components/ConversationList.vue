@@ -13,18 +13,17 @@
           <More />
         </el-icon>
       </div>
-
     </div>
     <div class="Popup" v-if="Popupbol" ref="Popup">
       <li>
         <el-icon>
-          <EditPen size="20px"/>
+          <EditPen size="20px" />
         </el-icon>
         <span>重命名</span>
       </li>
       <li>
         <el-icon>
-          <Delete size="20px" color="#ff4d4f"/>
+          <Delete size="20px" color="#ff4d4f" />
         </el-icon>
         <span>删除</span>
       </li>
@@ -38,9 +37,9 @@ import { ref } from 'vue'
 const Popupbol = ref(false)
 const show = () => {
   Popupbol.value = true
-    document.addEventListener('click', (e) => {
-      ClickOutside(e)
-    })
+  document.addEventListener('click', (e) => {
+    ClickOutside(e)
+  })
 }
 // 点击框外隐藏
 const ClickOutside = (e: Event) => {
@@ -65,11 +64,11 @@ const ClickOutside = (e: Event) => {
     bottom: -50px;
     right: -120px;
     transition: all 0.1s;
-    box-shadow: 0 0 5px rgba(30,30,30,0.1);
+    box-shadow: 0 0 5px rgba(30, 30, 30, 0.1);
     border-radius: 15px;
     background-color: var(--bg-color);
     li {
-    border-radius: 15px;
+      border-radius: 15px;
       padding: 0 10px;
       display: flex;
       align-items: center;
@@ -85,12 +84,11 @@ const ClickOutside = (e: Event) => {
       }
       &:nth-child(2) {
         color: #ff4d4f;
-        &:hover{
-        background-color: rgba(245, 139, 139, 0.7);
+        &:hover {
+          background-color: rgba(245, 139, 139, 0.7);
         }
       }
     }
-
   }
 
   .CList {
@@ -121,7 +119,6 @@ const ClickOutside = (e: Event) => {
       &:hover {
         background-color: #fff;
       }
-
     }
 
     .text {
@@ -129,7 +126,6 @@ const ClickOutside = (e: Event) => {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-
     }
 
     &:hover {
@@ -138,11 +134,9 @@ const ClickOutside = (e: Event) => {
       .ic {
         display: flex;
         box-shadow: 0 -10px 10px rgba(255, 255, 255, 0.8);
-
       }
     }
   }
-
 }
 
 /* 点击后样式 */

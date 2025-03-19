@@ -5,7 +5,7 @@
       <div class="header-left">OmniChat</div>
       <!-- 搜索框组件 -->
       <div class="header-right">
-        <input type="text" class="inp">
+        <input type="text" class="inp" />
         <a href="https://github.com/abwjs/llm-dialog-component" target="_blank" class="github-link">
           <img src="@/assets/img/github.png" alt="GitHub" class="github-icon" />
         </a>
@@ -31,7 +31,6 @@
       <!-- 按钮 -->
       <router-link class="bt" to="/chat">
         <el-button type="primary" plain size="large">开始对话</el-button>
-
       </router-link>
     </main>
   </div>
@@ -43,21 +42,19 @@ const proposeList = ref([
   {
     title: '多模态交互',
     text: '支持文本/图片/PDF混合输入，实时解析',
-    icon: 'ChatLineRound'
+    icon: 'ChatLineRound',
   },
   {
     title: '流式对话输出',
     text: '逐字流式渲染，支持中途打断与内容修正',
-    icon: 'Document'
-
+    icon: 'Document',
   },
   {
     title: '多对话框设计',
     text: '提供内嵌对话框和全屏工作台双模式',
-    icon: 'Operation'
+    icon: 'Operation',
   },
 ])
-
 </script>
 
 <style scoped lang="scss">
@@ -92,10 +89,9 @@ header {
 }
 
 main {
-  padding: 80px 20px;
   max-width: 1200px;
   margin: 0 auto;
-
+  padding-top: 50px;
   .title {
     margin: 0 auto;
     text-align: center;
@@ -115,7 +111,7 @@ main {
   .main {
     display: flex;
     align-items: center;
-    margin-top: 120px;
+    margin-top: 100px;
     flex-wrap: wrap;
     gap: 16px;
 
@@ -127,7 +123,10 @@ main {
       font-size: 22px;
       transition: all 0.5s;
       background-color: var(--bg-color);
-      box-shadow: rgb(241, 245, 249) 0px 0px 0px 1px, rgba(0, 0, 0, 0.05) 0px 2px 4px, rgba(0, 0, 0, 0.05) 0px 12px 24px;
+      box-shadow:
+        rgb(241, 245, 249) 0px 0px 0px 1px,
+        rgba(0, 0, 0, 0.05) 0px 2px 4px,
+        rgba(0, 0, 0, 0.05) 0px 12px 24px;
 
       &:hover {
         transform: translateY(-10px);
@@ -149,8 +148,6 @@ main {
         color: rgb(100, 116, 139);
       }
     }
-
-
   }
 
   //按钮
@@ -161,7 +158,6 @@ main {
     margin: 100px auto;
   }
 }
-
 
 //媒体查询移动端
 @media (max-width: 768px) {
