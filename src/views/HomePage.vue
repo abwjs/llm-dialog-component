@@ -3,9 +3,11 @@
     <!-- 上下布局 -->
     <header>
       <div class="header-left">OmniChat</div>
-      <!-- 搜索框组件 -->
       <div class="header-right">
+      <!-- 搜索框组件 -->
+
         <input type="text" class="inp" />
+        <!-- github -->
         <a href="https://github.com/abwjs/llm-dialog-component" target="_blank" class="github-link">
           <img src="@/assets/img/github.png" alt="GitHub" class="github-icon" />
         </a>
@@ -16,6 +18,7 @@
         <h2>OmniChat</h2>
         <span>全模态AI对话组件库，专为开发者打造LLM应用而生</span>
       </div>
+      <!-- 内容 -->
       <div class="main">
         <div class="box" v-for="(item, index) in proposeList" :key="index">
           <el-icon color="#409efc" class="no-inherit">
@@ -28,7 +31,7 @@
           </div>
         </div>
       </div>
-      <!-- 按钮 -->
+      <!-- 开始对话按钮 -->
       <router-link class="bt" to="/chat">
         <el-button type="primary" plain size="large">开始对话</el-button>
       </router-link>
@@ -58,7 +61,9 @@ const proposeList = ref([
 </script>
 
 <style scoped lang="scss">
+
 .Box {
+  // 保证最小有100vh
   min-height: 100vh;
   background-color: var(--bg-color);
 }
@@ -70,12 +75,11 @@ header {
   justify-content: space-between; // 两端对齐
   padding: 0 35px;
   border: 1px solid variable.$Border-Coloe;
-
+  // logo
   .header-left {
     font-size: 22px;
     font-weight: 600;
   }
-
   .header-right {
     display: flex;
     align-items: center;

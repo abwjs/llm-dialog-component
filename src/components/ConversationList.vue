@@ -1,6 +1,7 @@
-<!-- 会话列表组件 -->
+<!-- 一个会话的组件 -->
 <template>
   <div class="Box">
+    <!-- 会话内容 -->
     <div class="CList">
       <!-- 会话标题 -->
       <!-- 模拟数据 -->
@@ -12,6 +13,7 @@
         <el-icon><MoreFilled /></el-icon>
       </div>
     </div>
+    <!-- 弹出框 -->
     <div class="Popup" v-if="Popupbol" ref="popupRef">
       <li>
         <el-icon>
@@ -30,12 +32,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount,nextTick } from 'vue'
-
-const Popupbol = ref(false)
+import { ref, onBeforeUnmount, nextTick } from 'vue'
+// 控制弹出框是否弹出
+const Popupbol = ref<boolean>(false)
+// 获取弹出框元素
 const popupRef = ref<HTMLElement | null>(null)
 
-// 点击事件处理函数
+// 点击弹出框外面就隐藏弹出框
 const handleClickOutside = (e: Event) => {
   if (!popupRef.value || !popupRef.value.contains(e.target as Node)) {
     Popupbol.value = false
@@ -43,7 +46,9 @@ const handleClickOutside = (e: Event) => {
   }
 }
 
+// 点击...显示弹出框
 const show = () => {
+  // 改变控制弹出框变量
   Popupbol.value = !Popupbol.value
   if (Popupbol.value) {
     // 使用 setTimeout 确保弹出框已渲染
@@ -51,6 +56,7 @@ const show = () => {
       document.addEventListener('click', handleClickOutside)
     })
   } else {
+    // 卸载document点击事件监听
     document.removeEventListener('click', handleClickOutside)
   }
 }
@@ -62,9 +68,10 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
+// 会话列表
 .Box {
   position: relative;
-
+  //弹出框
   .Popup {
     display: flex;
     z-index: 999;
@@ -79,6 +86,7 @@ onBeforeUnmount(() => {
     box-shadow: 0 0 5px rgba(30, 30, 30, 0.1);
     border-radius: 15px;
     background-color: var(--bg-color);
+    //弹出框的两个选项
     li {
       border-radius: 15px;
       padding: 0 10px;
@@ -94,6 +102,7 @@ onBeforeUnmount(() => {
       &:hover {
         background-color: rgba(219, 234, 254, 0.5);
       }
+      // 删除选项
       &:nth-child(2) {
         color: #ff4d4f;
         &:hover {
@@ -102,11 +111,10 @@ onBeforeUnmount(() => {
       }
     }
   }
-
+  // 会话内容
   .CList {
     position: relative;
     overflow: hidden;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -152,7 +160,5 @@ onBeforeUnmount(() => {
 }
 
 /* 点击后样式 */
-.C {
-  background-color: rgb(200, 225, 245);
-}
+
 </style>

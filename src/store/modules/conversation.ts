@@ -11,6 +11,8 @@ const useConversationStore = defineStore('conversation', {
           Conversation_id: '1',
           // 会话内容列表
           content: [],
+          // 会话有无内容
+          bol: true
         },
       ],
     }

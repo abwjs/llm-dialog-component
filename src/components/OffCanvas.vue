@@ -15,6 +15,7 @@
         <span>创建新对话</span>
       </button>
       <div class="content">
+        <!-- 会话列表 -->
         <ConversationList></ConversationList>
       </div>
     </div>
@@ -62,7 +63,6 @@ const Scale = () => {
   background-color: var(--nav-bg-color);
   display: flex;
   flex-direction: column;
-  transition: all 0.1s;
   .Conversation {
     flex: 1;
     padding: 20px;

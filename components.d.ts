@@ -10,6 +10,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     Conversation: typeof import('./src/components/Conversation.vue')['default']
     ConversationList: typeof import('./src/components/ConversationList.vue')['default']
+    DialogBox: typeof import('./src/components/DialogBox.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElContainer: typeof import('element-plus/es')['ElContainer']
@@ -26,5 +27,6 @@ declare module 'vue' {
     OffCanvas: typeof import('./src/components/OffCanvas.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    VT: typeof import('./src/components/VT.vue')['default']
   }
 }
