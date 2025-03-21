@@ -1,5 +1,4 @@
 // src/utils/fetch.ts
-import {  RequestInit } from 'node-fetch'
 
 const BASE_URL = 'https://api.example.com'
 
@@ -17,7 +16,7 @@ export async function get<T>(url: string): Promise<T> {
   return fetchApi<T>(url, { method: 'GET' })
 }
 
-export async function post<T>(url: string, body: any, options?: RequestInit): Promise<T> {
+export async function post<T>(url: string, body: object, options?: RequestInit): Promise<T> {
   return fetchApi<T>(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

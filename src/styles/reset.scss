@@ -209,13 +209,20 @@ pre {
   font-size: 1em;
 }
 /*内减模式*/
-*{
+* {
   box-sizing: border-box;
 }
 /* 设置网页统一的字体大小、行高、字体系列相关属性 */
 body {
-  font: 16px/1.5 "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei",
-  "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei", sans-serif;
+  font:
+    16px/1.5 'Helvetica Neue',
+    Helvetica,
+    Arial,
+    'Microsoft Yahei',
+    'Hiragino Sans GB',
+    'Heiti SC',
+    'WenQuanYi Micro Hei',
+    sans-serif;
   color: #333;
 }
 
@@ -226,7 +233,6 @@ ol {
 }
 li {
   list-style: none;
-
 }
 /* 去除默认的倾斜效果 */
 em,
@@ -265,10 +271,9 @@ input {
 /* 双伪元素清除法 */
 .clearfix::before,
 .clearfix::after {
-  content: "";
+  content: '';
   display: table;
 }
 .clearfix::after {
   clear: both;
 }
-

@@ -1,12 +1,12 @@
 <!-- 侧边导航栏 -->
 <template>
-  <div :class="{ open: bol, scale: !bol }" class="nav" ref="nav">
+  <div :class="{ open: NavStore.navbol, scale: !NavStore.navbol }" class="nav" ref="nav">
     <div class="header">
-      <h2 v-if="bol">OmniChat</h2>
+      <h2 v-if="NavStore.navbol">OmniChat</h2>
       <!-- 切换按钮占位 -->
       <button class="bt" @click="Scale"></button>
     </div>
-    <div v-if="bol" class="Conversation">
+    <div v-if="NavStore.navbol" class="Conversation">
       <!-- 新建对话按钮 -->
       <button class="Newconversation">
         <el-icon color="#409efc" size="20px">
@@ -15,7 +15,8 @@
         <span>创建新对话</span>
       </button>
       <div class="content">
-        <ConversationList></ConversationList>
+        <!-- 会话列表 -->
+        <ConversationList v-for="(item) in Conversation_list" :key="item.Conversation_id"></ConversationList>
       </div>
     </div>
   </div>
@@ -23,11 +24,16 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import ConversationList from '@/components/ConversationList.vue'
-const bol = ref(false)
+import useNavStore from '../store/modules/nav'
+import useConversationStore from '../store/modules/conversation'
+const conversationStore = useConversationStore()
+const {Conversation_list} = storeToRefs(conversationStore)
+const NavStore = useNavStore()
 const nav = ref()
 const Scale = () => {
-  bol.value = !bol.value
+  NavStore.navbol = !NavStore.navbol
 }
 </script>
 
@@ -53,18 +59,14 @@ const Scale = () => {
       font-size: 24px;
       font-weight: 600;
     }
-
   }
-
 }
-
 
 .nav {
   height: 100vh;
   background-color: var(--nav-bg-color);
   display: flex;
   flex-direction: column;
-
   .Conversation {
     flex: 1;
     padding: 20px;
@@ -84,7 +86,7 @@ const Scale = () => {
       color: #409efc;
       cursor: pointer;
       &:hover {
-        background-color: rgb(200,225,245);
+        background-color: rgb(200, 225, 245);
       }
     }
   }
@@ -109,12 +111,19 @@ const Scale = () => {
       }
     }
   }
-
 }
 
 @media (max-width: 768px) {
   .nav {
-    display: none;
+    position: absolute;
+    top: 0;
+    z-index: 999;
+  }
+  .scale {
+    left: -100%;
+  }
+  .open {
+    left: 0;
   }
 }
 </style>
