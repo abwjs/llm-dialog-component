@@ -50,7 +50,6 @@ const Scale = () => {
     store.navbol = !store.navbol
   })
 }
-
 </script>
 
 <style scoped lang="scss">
@@ -148,8 +147,6 @@ const Scale = () => {
           color: rgb(71, 85, 105);
         }
       }
-
-
     }
 
     //会话有消息的样式
@@ -161,8 +158,6 @@ const Scale = () => {
     }
   }
 }
-
-
 
 //移动端适配
 @media (max-width: 768px) {

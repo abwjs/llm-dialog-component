@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 const useConversationStore = defineStore('conversation', {
-  state:() =>{
+  state: () => {
     return {
       //会话列表
       Conversation_list: [
@@ -8,7 +8,7 @@ const useConversationStore = defineStore('conversation', {
           // 会话id1
           Conversation_id: '1',
           // 会话标题
-          Conversation_title:'少时诵诗书生生世世',
+          Conversation_title: '少时诵诗书生生世世',
           // 会话内容列表
           content: [],
           // 会话有无内容
@@ -18,7 +18,7 @@ const useConversationStore = defineStore('conversation', {
           // 会话id1
           Conversation_id: '2',
           // 会话标题
-          Conversation_title:'JAVA是什么语言',
+          Conversation_title: 'JAVA是什么语言',
           // 会话内容列表
           content: [],
           // 会话有无内容

@@ -165,7 +165,7 @@ onBeforeUnmount(() => {
       transform: translateY(-50%);
       width: 150px;
       height: 100%;
-      background: linear-gradient(90deg,rgba(249,251,255,0) 50%,var(--nav-bg-color) 100%);
+      background: linear-gradient(90deg, rgba(249, 251, 255, 0) 50%, var(--nav-bg-color) 100%);
     }
     .fuzzy2 {
       opacity: 0;
@@ -175,7 +175,7 @@ onBeforeUnmount(() => {
       transform: translateY(-50%);
       width: 120px;
       height: 100%;
-      background: linear-gradient(90deg,rgba(249,251,255,0)0%,rgba(219, 234, 254)100%);
+      background: linear-gradient(90deg, rgba(249, 251, 255, 0) 0%, rgba(219, 234, 254) 100%);
     }
     &:hover {
       background-color: rgba(219, 234, 254);
