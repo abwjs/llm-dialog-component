@@ -16,7 +16,10 @@
       </button>
       <div class="content">
         <!-- 会话列表 -->
-        <ConversationList v-for="(item) in Conversation_list" :key="item.Conversation_id"></ConversationList>
+        <ConversationList
+          v-for="item in Conversation_list"
+          :key="item.Conversation_id"
+        ></ConversationList>
       </div>
     </div>
   </div>
@@ -29,7 +32,7 @@ import ConversationList from '@/components/ConversationList.vue'
 import useNavStore from '../store/modules/nav'
 import useConversationStore from '../store/modules/conversation'
 const conversationStore = useConversationStore()
-const {Conversation_list} = storeToRefs(conversationStore)
+const { Conversation_list } = storeToRefs(conversationStore)
 const NavStore = useNavStore()
 const nav = ref()
 const Scale = () => {
