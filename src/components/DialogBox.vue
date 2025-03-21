@@ -1,5 +1,5 @@
 <template>
-  <div class="DialogBox" :class="{DialogBoxP:conversation.Conversation_list[0].bol}">
+  <div class="DialogBox" >
     <!-- 对话框组件模拟 -->
     <textarea name="" id="" :value="text"></textarea>
     <button class="file" @click="sending"></button>
@@ -8,8 +8,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import useConversationStore from '../store/modules/conversation'
-const conversation = useConversationStore()
 const text = ref('')
 const sending = () => {
   if (text.value === '') {
@@ -21,20 +19,22 @@ const sending = () => {
 // 对话框
 .DialogBox {
   position: relative;
-  width: 750px;
-  height: 130px;
-  border-radius: 30px;
-  background-color: rgb(243, 244, 246);
-  padding: 10px;
-
+  width:100%;
+  padding: 15px 0;
+  background-color: #fff;
+  min-height: 130px;
+  display: flex;
   textarea {
     width: 100%;
-    height: 100%;
+    min-height: 100px;
     object-fit: none;
+  border-radius: 30px;
+  padding: 15px;
     border: 0;
     font-size: 15px;
     background-color: rgb(243, 244, 246);
     resize: none;
+    box-shadow: 0 0 5px rgba(25, 25, 25, 0.2);
   }
 
   .file {
@@ -49,17 +49,13 @@ const sending = () => {
     box-shadow: 0 0 10px rgba(25, 25, 25, 0.2);
   }
 }
-//有消息是绝对定位
-.DialogBoxP {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-@media (max-width: 768px) {
 
+@media (max-width: 768px) {
   .DialogBox {
     width: 100%;
+    textarea {
+      width: 100%;
+    }
   }
 }
 </style>

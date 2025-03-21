@@ -21,14 +21,13 @@
           <p>有什么可以帮你的？</p>
         </div>
         <!-- 对话框组件 -->
-
         <DialogBox></DialogBox>
       </div>
       <!-- 有消息时显示的组件 -->
       <div class="Form2 Form" v-else>
-        <DialogBox></DialogBox>
         <!-- 消息列表组件 -->
-        <VT></VT>
+        <ChatContent></ChatContent>
+        <DialogBox></DialogBox>
       </div>
     </div>
   </div>
@@ -40,7 +39,7 @@ import OffCanvas from '@/components/OffCanvas.vue'
 // 对话框组件
 import DialogBox from '../components/DialogBox.vue'
 // 消息列表组件
-import VT from '../components/VT.vue'
+import ChatContent from '../components/ChatContent.vue'
 import useNavStore from '../store/modules/nav'
 import useConversationStore from '../store/modules/conversation'
 const NavStore = useNavStore()
@@ -57,7 +56,7 @@ const Scale = () => {
 <style scoped lang="scss">
 .Box {
   display: flex;
-  min-height: 100vh;
+  max-height: 100vh;
 
   .main {
     padding: 0 10px;
@@ -73,6 +72,7 @@ const Scale = () => {
     .MaskLayer {
       display: none;
     }
+
     //头部导航
     .nav {
       position: relative;
@@ -157,7 +157,7 @@ const Scale = () => {
       padding-top: 30px;
       width: 750px;
       position: relative;
-      overflow: auto;
+      overflow-y: auto;
     }
   }
 }
@@ -180,6 +180,7 @@ const Scale = () => {
         height: 100%;
         background-color: rgba(0, 0, 0, 0.5);
       }
+
       // 头部导航
       .nav {
         justify-content: space-between;
@@ -191,8 +192,6 @@ const Scale = () => {
 
       .Form {
         width: 100%;
-
-
       }
     }
   }

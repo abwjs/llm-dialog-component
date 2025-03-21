@@ -9,9 +9,13 @@
         <h2>JS代码问题回答介绍解释回答</h2>
       </div>
       <!-- ... -->
-      <div class="ic" @click.stop="show">
+      <div class="more" @click.stop="show">
         <el-icon><MoreFilled /></el-icon>
       </div>
+      <!-- 不触摸时模糊 -->
+      <div class="fuzzy1"></div>
+      <!-- 触摸模糊 -->
+      <div class="fuzzy2"></div>
     </div>
     <!-- 弹出框 -->
     <div class="Popup" v-if="Popupbol" ref="popupRef">
@@ -33,6 +37,7 @@
 
 <script setup lang="ts">
 import { ref, onBeforeUnmount, nextTick } from 'vue'
+
 // 控制弹出框是否弹出
 const Popupbol = ref<boolean>(false)
 // 获取弹出框元素
@@ -71,6 +76,7 @@ onBeforeUnmount(() => {
 // 会话列表
 .Box {
   position: relative;
+  margin: 10px 0;
   //弹出框
   .Popup {
     display: flex;
@@ -100,7 +106,7 @@ onBeforeUnmount(() => {
         margin-left: 25px;
       }
       &:hover {
-        background-color: rgba(219, 234, 254, 0.5);
+        background-color: rgba(219, 234, 254);
       }
       // 删除选项
       &:nth-child(2) {
@@ -122,43 +128,71 @@ onBeforeUnmount(() => {
     width: 100%;
     height: 40px;
     transition: all 0.1s;
-    padding: 5px 10px;
+    padding: 10px;
     cursor: pointer;
-
-    .ic {
-      height: 26px;
-      width: 26px;
+    //...
+    .more {
+      opacity: 0;
+      display: flex;
+      right: 10px;
+      position: absolute;
+      height: 23px;
+      width: 23px;
       cursor: pointer;
       border-radius: 10px;
-      display: none;
-
       align-items: center;
       justify-content: center;
-      transition: all 0.1s;
+      z-index: 999;
+      background-color: rgba(219, 234, 254);
 
       &:hover {
-        background-color: #fff;
+        background-color: #fffffff5;
       }
     }
-
+    //标题
     .text {
-      font-size: 15px;
+      font-size: 14px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
+    // 模糊
+    .fuzzy1 {
+      position: absolute;
+      right: 0px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 150px;
+      height: 100%;
+      background: linear-gradient(90deg,rgba(249,251,255,0) 50%,var(--nav-bg-color) 100%);
+    }
+    .fuzzy2 {
+      opacity: 0;
+      position: absolute;
+      right: 0px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 120px;
+      height: 100%;
+      background: linear-gradient(90deg,rgba(249,251,255,0)0%,rgba(219, 234, 254)100%);
+    }
     &:hover {
-      background-color: rgba(219, 234, 254, 0.5);
-
-      .ic {
-        display: flex;
-        box-shadow: 0 -10px 10px rgba(255, 255, 255, 0.8);
+      background-color: rgba(219, 234, 254);
+      .fuzzy1 {
+        opacity: 0;
+      }
+      // 当鼠标碰到会话列表时显示模糊
+      .fuzzy2 {
+        opacity: 1;
+      }
+      // 当鼠标碰到会话列表时显示 ...
+      .more {
+        opacity: 1;
       }
     }
   }
 }
 
 /* 点击后样式 */
-
 </style>

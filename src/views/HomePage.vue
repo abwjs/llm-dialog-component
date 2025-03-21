@@ -4,7 +4,7 @@
     <header>
       <div class="header-left">OmniChat</div>
       <div class="header-right">
-      <!-- 搜索框组件 -->
+        <!-- 搜索框组件 -->
 
         <input type="text" class="inp" />
         <!-- github -->
@@ -61,7 +61,6 @@ const proposeList = ref([
 </script>
 
 <style scoped lang="scss">
-
 .Box {
   // 保证最小有100vh
   min-height: 100vh;
