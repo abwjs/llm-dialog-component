@@ -74,11 +74,13 @@ header {
   justify-content: space-between; // 两端对齐
   padding: 0 35px;
   border: 1px solid variable.$Border-Coloe;
+
   // logo
   .header-left {
     font-size: 22px;
     font-weight: 600;
   }
+
   .header-right {
     display: flex;
     align-items: center;
@@ -95,6 +97,7 @@ main {
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 50px;
+
   .title {
     margin: 0 auto;
     text-align: center;
