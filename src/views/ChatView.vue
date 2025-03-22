@@ -9,12 +9,12 @@
         <!-- 侧边框按钮 -->
         <button class="headerbt" v-if="!NavStore.navbol" @click="Scale"></button>
         <!-- 问题标题 -->
-        <h2>你是谁</h2>
+        <h2 v-if="true">你是谁</h2>
         <!-- 返回按钮 -->
         <router-link to="/" class="active"></router-link>
       </div>
       <!-- 有消息时显示的组件 -->
-      <div class="Form1 Form" v-if="!Conversation.Conversation_list[0].bol">
+      <div class="Form1 Form" v-if="false">
         <div class="word">
           <!-- logo占位 -->
           <h2>我是OmniChat，开始对话吧</h2>
@@ -59,14 +59,13 @@ const Scale = () => {
 
   .main {
     padding: 0 10px;
-
     position: relative;
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: var(--bg-color);
-
+    height: 100vh;
     // 遮罩层
     .MaskLayer {
       display: none;
@@ -129,7 +128,6 @@ const Scale = () => {
     // 会话没有消息的样式
     .Form1 {
       margin-top: -64px;
-
       .word {
         display: flex;
         flex-direction: column;
