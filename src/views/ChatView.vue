@@ -41,9 +41,9 @@ import DialogBox from '../components/DialogBox.vue'
 // 消息列表组件
 import ChatContent from '../components/ChatContent.vue'
 import useNavStore from '../store/modules/nav'
-import useConversationStore from '../store/modules/conversation'
+// import useConversationStore from '../store/modules/conversation'
+// const Conversation = useConversationStore()
 const NavStore = useNavStore()
-const Conversation = useConversationStore()
 // 修改导航栏隐藏显示
 const Scale = () => {
   NavStore.$patch((store) => {

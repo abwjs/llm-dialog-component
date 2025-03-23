@@ -1,15 +1,16 @@
 // //发起对话
 import http from './http'
 import config from '@/assets/config'
-import type { body } from '@/types/dialogue'
+import useConversationStore from '@/store/modules/conversation'
+// import type { body } from '@/types/dialogue'
 const { user_id, bot_id } = config
-import {CreateConversations} from './conversation';
-
 // 处理流式输出提取内容函数（使用buffer处理不完整行）
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let fullContent = ''
 let buffer = ''
 let chat_id = ''
-const processChunk = (chunk:any) => {
+const processChunk = (chunk:string) => {
+
   buffer += chunk;
   const lines = buffer.split("\n");
   // 保留未处理完的部分
@@ -49,6 +50,8 @@ const processChunk = (chunk:any) => {
 
 // 发起对话请求
 const Talk = async () => {
+const ConversationStore = useConversationStore()
+
   const Obj = {
     method: 'post',
     path: 'v3/chat',
@@ -65,6 +68,9 @@ const Talk = async () => {
         },
       ],
     },
+    params:{
+      conversation_id:ConversationStore.ConversationsId
+    }
   }
   http(Obj)
     .then(async (res) => {
