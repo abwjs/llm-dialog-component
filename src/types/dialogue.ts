@@ -1,9 +1,9 @@
 interface auto_save_history {
-  role:string
-  type?:string
-  content?:string
-  content_type?:string
-  meta_data?:string
+  role: string
+  type?: string
+  content?: string
+  content_type?: string
+  meta_data?: string
 }
 
 // 发起对话的body类型
@@ -17,7 +17,7 @@ export interface body {
   // 保持该对话
   auto_save_history?: boolean
   // 附加消息
-  additional_messages?:auto_save_history
+  additional_messages?: auto_save_history
 }
 
 //返回的可读流类型

@@ -9,48 +9,47 @@ const { user_id, bot_id } = config
 let fullContent = ''
 let buffer = ''
 let chat_id = ''
-const processChunk = (chunk:string) => {
-
-  buffer += chunk;
-  const lines = buffer.split("\n");
+const processChunk = (chunk: string) => {
+  buffer += chunk
+  const lines = buffer.split('\n')
   // 保留未处理完的部分
-  buffer = lines.pop() || "";
+  buffer = lines.pop() || ''
   for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim();
-    if (line.startsWith("event:conversation.chat.created")) {
+    const line = lines[i].trim()
+    if (line.startsWith('event:conversation.chat.created')) {
       //找data的那一行
-      const dataLine = lines[i + 1].trim();
+      const dataLine = lines[i + 1].trim()
       //去data
-      const dataStr = dataLine.slice(5).trim();
+      const dataStr = dataLine.slice(5).trim()
       try {
-        const data = JSON.parse(dataStr);
+        const data = JSON.parse(dataStr)
         chat_id = data.id
-        console.log(chat_id);
+        console.log(chat_id)
       } catch (error) {
-        console.error("拿取chatid失败", error);
+        console.error('拿取chatid失败', error)
       }
     }
-    if (line.startsWith("event:conversation.message.delta") && i + 1 < lines.length) {
-      const dataLine = lines[i + 1].trim();
-      if (dataLine.startsWith("data:")) {
-        const dataStr = dataLine.slice(5).trim();
+    if (line.startsWith('event:conversation.message.delta') && i + 1 < lines.length) {
+      const dataLine = lines[i + 1].trim()
+      if (dataLine.startsWith('data:')) {
+        const dataStr = dataLine.slice(5).trim()
         try {
-          const data = JSON.parse(dataStr);
-          if (data.type === "answer") {
-            fullContent += data.content;
+          const data = JSON.parse(dataStr)
+          if (data.type === 'answer') {
+            fullContent += data.content
           }
         } catch (error) {
-          console.error("解析 JSON 失败:", error);
+          console.error('解析 JSON 失败:', error)
         }
-        i++; // 跳过已处理的 data 行
+        i++ // 跳过已处理的 data 行
       }
     }
   }
-};
+}
 
 // 发起对话请求
 const Talk = async () => {
-const ConversationStore = useConversationStore()
+  const ConversationStore = useConversationStore()
 
   const Obj = {
     method: 'post',
@@ -64,29 +63,28 @@ const ConversationStore = useConversationStore()
         {
           role: 'user',
           content: '回复我一个字',
-          content_type:'text'
+          content_type: 'text',
         },
       ],
     },
-    params:{
-      conversation_id:ConversationStore.ConversationsId
-    }
+    params: {
+      conversation_id: ConversationStore.ConversationsId,
+    },
   }
   http(Obj)
     .then(async (res) => {
-
       // 创建一个可读流
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder('utf-8');
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) {
-        console.log('结束读取');
-        break;
+      const reader = res.body.getReader()
+      const decoder = new TextDecoder('utf-8')
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) {
+          console.log('结束读取')
+          break
+        }
+        processChunk(decoder.decode(value, { stream: true }))
+        // 处理累积的消息内容
       }
-      processChunk(decoder.decode(value, { stream: true }));
-      // 处理累积的消息内容
-    }
     })
     .catch((err) => {
       console.log(err)
