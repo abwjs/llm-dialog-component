@@ -3,10 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import { CreateConversations } from './api/conversation';
-import Talk from './api/char'
+import { CreateConversations} from './api/conversation';
 CreateConversations()
-Talk()
 </script>
 
 <style scoped></style>

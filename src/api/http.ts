@@ -4,14 +4,15 @@ const { apiKey, Url } = config
 interface Obj {
   method: string
   path: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: any
-  data?: any
+  data?: object
 }
 
 const controller = new AbortController();
 //file判断是不是上传文件
 async function http(obj: Obj, file = false) {
-  let { method, path, params, data } = obj
+  const { method, path, params, data } = obj
   let headers
   // 非文件上传
   if (!file) {
@@ -30,7 +31,7 @@ async function http(obj: Obj, file = false) {
   let url: string = `${Url + path}`
   if (params) {
     //将params参数拼接为key=value&key=value
-    let str = new URLSearchParams(params).toString()
+    const str = new URLSearchParams(params).toString()
     url += `?${str}`
   }
   let res
@@ -44,6 +45,7 @@ async function http(obj: Obj, file = false) {
       body: JSON.stringify(data),
       signal: controller.signal
     })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }catch (error:any) {
     if (error.name === 'AbortError') {
       console.log('Fetch aborted', '拦截请求');

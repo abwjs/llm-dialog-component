@@ -33,6 +33,7 @@ const useConversationStore = defineStore('conversation', {
     addConversation() {
 
     }
-  }
+  },
+  persist:true
 })
 export default useConversationStore
