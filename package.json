@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --open",
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
@@ -16,6 +16,7 @@
     "preinstall": "node ./scripts/preinstall.js"
   },
   "dependencies": {
+    "@coze/api": "^1.1.0",
     "@element-plus/icons-vue": "^2.3.1",
     "axios": "^1.8.3",
     "element-plus": "^2.9.6",
