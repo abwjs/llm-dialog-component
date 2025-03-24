@@ -14,7 +14,7 @@
         <router-link to="/" class="active"></router-link>
       </div>
       <!-- 没有消息时显示的组件 -->
-      <div class="Form1 Form" v-if="Conversation.dialog">
+      <div class="Form1 Form" v-if="!Conversation.dialog">
         <div class="word">
           <!-- logo占位 -->
           <h2>我是OmniChat，开始对话吧</h2>
@@ -56,7 +56,7 @@ const Scale = () => {
 .Box {
   display: flex;
   max-height: 100vh;
-
+  overflow: hidden;
   .main {
     padding: 0 10px;
     position: relative;
@@ -151,7 +151,8 @@ const Scale = () => {
     //会话有消息的样式
     .Form2 {
       padding-top: 30px;
-      width: 750px;
+      width: 100%;
+      max-width: 750px;
       position: relative;
       overflow-y: auto;
     }

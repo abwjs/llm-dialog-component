@@ -1,17 +1,21 @@
-//消息用户还是ai
-enum ContentType {
-  user = 'user',
-  assistant = 'assistant',
-}
-interface Content {
-  role: ContentType
-}
+import type { FileObject } from "@coze/api/."
+
+
 //会话的类型
 export interface conversation {
   // 会话id
-  id: string
+  Conversation_id: string,
   // 会话标题
-  name: string
-  //内容
-  content: Content
+  Conversation_title:  string,
+  // 会话内容列表
+  content: Content[]
+  // 时间
+  createdAt:Date,
+}
+//消息列表的内容
+export interface Content {
+  id: string
+  role: 'assistant' | 'user'
+  value: string
+  fileInfo?: FileObject
 }

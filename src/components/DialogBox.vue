@@ -41,7 +41,7 @@ const sending = () => {
   .file {
     position: absolute;
     right: 10px;
-    bottom: 5px;
+    bottom: 30px;
     cursor: pointer;
     width: 25px;
     height: 25px;

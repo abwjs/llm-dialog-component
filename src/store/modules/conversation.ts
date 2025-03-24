@@ -1,65 +1,56 @@
 import { defineStore } from 'pinia'
 import { CreateConversations } from '@/api/conversation'
+import type { conversation } from '@/types/conversation'
+
+interface conversationStore {
+  dialog: boolean
+  // 当前会话id
+  ConversationsId: string
+  //会话列表
+  Conversation_list: conversation[]
+}
+
 const useConversationStore = defineStore('conversation', {
-  state: () => {
+  state: (): conversationStore => {
     return {
       // 对话框组件显示与隐藏
       dialog: false,
       // 当前会话id
-      ConversationsId: '1',
+      ConversationsId: '',
       //会话列表
-      Conversation_list: [
-        {
-          // 会话id
-          Conversation_id: '1',
-          // 会话标题
-          Conversation_title: '',
-          // 会话内容列表
-          content: [],
-          // 时间
-          createdAt: Date.now(),
-        },
-      ],
+      Conversation_list: [],
     }
   },
   actions: {
-    //查看会话列表
+    //改变当前id
+    setConversationId(id: string) {
+      this.ConversationsId = id
+    },
+    //当前的会话的列表
     GetConversation() {
       return this.Conversation_list.find((item) => item.Conversation_id === this.ConversationsId)
     },
-    // 创建会话
-    timestampToDate(timestamp: number) {
-      const Date1 = new Date()
-      const date = new Date(timestamp)
-      const Y = Date1.getFullYear() - date.getFullYear()
-      if (Y > 1) return '1年前'
-      const M = Date1.getMonth() - date.getMonth()
-      if (M > 1) return '1年内'
-      const D = Date1.getDate() - date.getDate()
-      if(D>30)return '30天内'
-      switch (D) {
-        case 1:
-          return '昨天'
-        case 0:
-          return '今天'
-        default:
-          return '7天内'
-      }
+    //获取当前的会话的信息列表
+    GetContent() {
+      return this.GetConversation()?.content ||[]
     },
+    //新建会话
     addConversation() {
       const res = CreateConversations()
       res.then(({ data }) => {
         console.log(data)
-
+        this.Conversation_list.push({
+          // 会话id
+          Conversation_id: data.id,
+          // 会话标题
+          Conversation_title: '新建对话',
+          // 会话内容列表
+          content: [],
+          // 时间
+          createdAt: data.created_at,
+        })
         this.ConversationsId = data.id
-        created_at
       })
-
-      // const {
-      //   Conversation_id,
-      //   Conversation_titles,
-      //   content,
-      // } = obj
     },
   },
   persist: true,

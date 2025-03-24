@@ -1,6 +1,11 @@
 <!-- 一个会话的组件 -->
 <template>
-  <div class="Box" :class="{active:Conversation.Conversation_id === conversationStore.ConversationsId}">
+  <div
+    class="Box"
+    :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId
+    }"
+    @click="ActiveFn"
+  >
     <!-- 会话内容 -->
     <div class="CList">
       <!-- 会话标题 -->
@@ -44,7 +49,8 @@ const conversationStore = useConversationStore()
 
 const props = defineProps(['Conversation'])
 const Conversation = props.Conversation
-
+// 当前会话的id
+const id = Conversation.Conversation_id
 // 控制弹出框是否弹出
 const Popupbol = ref<boolean>(false)
 // 获取弹出框元素
@@ -71,6 +77,14 @@ const show = () => {
     // 卸载document点击事件监听
     document.removeEventListener('click', handleClickOutside)
   }
+}
+
+//点击该会话后处理操作
+const ActiveFn = ()=>{
+  // 改变当前会话id
+  conversationStore.setConversationId(id)
+  // 获取当前会话消息
+  conversationStore.GetConversation()
 }
 
 // 组件卸载前移除监听
@@ -219,17 +233,17 @@ onBeforeUnmount(() => {
   .CList {
     background-color: rgba(219, 234, 254);
 
-  .fuzzy1 {
-    opacity: 0;
-  }
+    .fuzzy1 {
+      opacity: 0;
+    }
 
-  .fuzzy2 {
-    opacity: 1;
-  }
+    .fuzzy2 {
+      opacity: 1;
+    }
 
-  .more {
-    opacity: 1;
-  }
+    .more {
+      opacity: 1;
+    }
   }
 }
 </style>

@@ -5,7 +5,7 @@ const useNavStore = defineStore('nav', {
       // 侧导航隐藏
       navbol: false,
       // 对话框组件显示与隐藏
-      dialog:false
+      dialog: false,
     }
   },
   actions: {},

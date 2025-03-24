@@ -2,7 +2,6 @@
 import http from './http'
 import config from '@/assets/config'
 import useConversationStore from '@/store/modules/conversation'
-// import type { body } from '@/types/dialogue'
 const { user_id, bot_id } = config
 // 处理流式输出提取内容函数（使用buffer处理不完整行）
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

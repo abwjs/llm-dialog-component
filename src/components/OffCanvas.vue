@@ -18,7 +18,8 @@
         <!-- 会话列表 -->
         <ConversationList
           v-for="item in Conversation_list"
-          :key="item.Conversation_id" :Conversation="item"
+          :key="item.Conversation_id"
+          :Conversation="item"
         ></ConversationList>
       </div>
     </div>
@@ -39,8 +40,8 @@ const Scale = () => {
   NavStore.navbol = !NavStore.navbol
 }
 
-const CreateMessage = ()=>{
-  conversationStore.addConversation({})
+const CreateMessage = () => {
+
 }
 </script>
 
@@ -77,6 +78,9 @@ const CreateMessage = ()=>{
   .Conversation {
     flex: 1;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+
     .Newconversation {
       margin-bottom: 20px;
       border: 0;
