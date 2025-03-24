@@ -8,7 +8,7 @@
     </div>
     <div v-if="NavStore.navbol" class="Conversation">
       <!-- 新建对话按钮 -->
-      <button class="Newconversation">
+      <button @click="CreateMessage" class="Newconversation">
         <el-icon color="#409efc" size="20px">
           <ChatLineRound />
         </el-icon>
@@ -19,6 +19,7 @@
         <ConversationList
           v-for="item in Conversation_list"
           :key="item.Conversation_id"
+          :Conversation="item"
         ></ConversationList>
       </div>
     </div>
@@ -37,6 +38,10 @@ const NavStore = useNavStore()
 const nav = ref()
 const Scale = () => {
   NavStore.navbol = !NavStore.navbol
+}
+
+const CreateMessage = () => {
+
 }
 </script>
 
@@ -73,6 +78,9 @@ const Scale = () => {
   .Conversation {
     flex: 1;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+
     .Newconversation {
       margin-bottom: 20px;
       border: 0;

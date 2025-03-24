@@ -19,13 +19,12 @@ const sending = () => {
 // 对话框
 .DialogBox {
   position: relative;
-  width: 100%;
   padding: 15px 0;
   padding-bottom: 20px;
   background-color: #fff;
   min-height: 130px;
   display: flex;
-
+  width: 100%;
   textarea {
     width: 100%;
     min-height: 100px;
@@ -42,13 +41,19 @@ const sending = () => {
   .file {
     position: absolute;
     right: 10px;
-    bottom: 5px;
+    bottom: 30px;
     cursor: pointer;
     width: 25px;
     height: 25px;
     border-radius: 5px;
     border: 0;
     box-shadow: 0 0 10px rgba(25, 25, 25, 0.2);
+  }
+}
+@media (max-width: 768px) {
+  .DialogBox {
+    width: 100%;
+    max-width: 100%;
   }
 }
 </style>

@@ -13,8 +13,8 @@
         <!-- 返回按钮 -->
         <router-link to="/" class="active"></router-link>
       </div>
-      <!-- 有消息时显示的组件 -->
-      <div class="Form1 Form" v-if="false">
+      <!-- 没有消息时显示的组件 -->
+      <div class="Form1 Form" v-if="!Conversation.dialog">
         <div class="word">
           <!-- logo占位 -->
           <h2>我是OmniChat，开始对话吧</h2>
@@ -41,8 +41,8 @@ import DialogBox from '../components/DialogBox.vue'
 // 消息列表组件
 import ChatContent from '../components/ChatContent.vue'
 import useNavStore from '../store/modules/nav'
-// import useConversationStore from '../store/modules/conversation'
-// const Conversation = useConversationStore()
+import useConversationStore from '../store/modules/conversation'
+const Conversation = useConversationStore()
 const NavStore = useNavStore()
 // 修改导航栏隐藏显示
 const Scale = () => {
@@ -56,7 +56,7 @@ const Scale = () => {
 .Box {
   display: flex;
   max-height: 100vh;
-
+  overflow: hidden;
   .main {
     padding: 0 10px;
     position: relative;
@@ -127,6 +127,7 @@ const Scale = () => {
 
     // 会话没有消息的样式
     .Form1 {
+      width: 60%;
       margin-top: -64px;
       .word {
         display: flex;
@@ -150,7 +151,8 @@ const Scale = () => {
     //会话有消息的样式
     .Form2 {
       padding-top: 30px;
-      width: 750px;
+      width: 100%;
+      max-width: 750px;
       position: relative;
       overflow-y: auto;
     }
