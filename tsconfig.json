@@ -13,9 +13,10 @@
     }
   ],
   "compilerOptions": {
-    // ...
+    "composite": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
-  },
+    "allowSyntheticDefaultImports": true,
+    "types": ["node", "node-fetch"]
+  }
 }
