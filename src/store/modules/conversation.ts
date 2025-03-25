@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia'
 import { CreateConversations } from '@/api/conversation'
 import type { conversation } from '@/types/conversation'
-
 interface conversationStore {
   dialog: boolean
   // 当前会话id
@@ -22,6 +21,9 @@ const useConversationStore = defineStore('conversation', {
     }
   },
   actions: {
+    //进行一次对话
+    setMessage() {},
+
     //改变当前id
     setConversationId(id: string) {
       this.ConversationsId = id
@@ -32,7 +34,7 @@ const useConversationStore = defineStore('conversation', {
     },
     //获取当前的会话的信息列表
     GetContent() {
-      return this.GetConversation()?.content ||[]
+      return this.GetConversation()?.content || []
     },
     //新建会话
     addConversation() {
@@ -50,6 +52,12 @@ const useConversationStore = defineStore('conversation', {
           createdAt: data.created_at,
         })
         this.ConversationsId = data.id
+      })
+    },
+    //删除会话
+    removeConversation(id: string) {
+      this.Conversation_list =  this.Conversation_list.filter((item) => {
+        return item.Conversation_id !== id
       })
     },
   },

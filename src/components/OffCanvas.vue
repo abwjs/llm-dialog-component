@@ -41,7 +41,7 @@ const Scale = () => {
 }
 
 const CreateMessage = () => {
-
+  conversationStore.addConversation()
 }
 </script>
 

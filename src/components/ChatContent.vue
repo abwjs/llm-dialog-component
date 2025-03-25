@@ -1,10 +1,15 @@
 <!-- 消息列表组件 -->
 <template>
   <div class="chatBox">
-    <div class="Message" :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user'}" v-for="item in ContentList" :key="item.id">
+    <div
+      class="Message"
+      :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user' }"
+      v-for="item in ContentList"
+      :key="item.id"
+    >
       <!-- ai回答 -->
       <div class="left chat" v-if="item.role === 'assistant'">
-        <img src="../assets/img/logo.pngd" alt="">
+        <img src="../assets/img/logo.pngd" alt="" />
         <span>{{ item.value }}</span>
       </div>
       <!-- 用户回答 -->
@@ -16,20 +21,10 @@
 </template>
 
 <script setup lang="ts">
-import type { Content } from '../types/conversation';
-import { onMounted,ref } from 'vue';
-import useConversationStore from '../store/modules/conversation';
-const ContentList = ref<Content[]>([])
-onMounted(() => {
-  const Conversation = useConversationStore()
-  const { GetContent } = Conversation
-  ContentList.value.push(GetContent())
-})
-ContentList.value.push({
-  id:'1',
-  value:'那个',
-  role:'user'
-})
+import { toRef } from 'vue';
+
+const props = defineProps(['ContentList'])
+const ContentList = toRef(props.ContentList)
 console.log(ContentList.value);
 
 </script>

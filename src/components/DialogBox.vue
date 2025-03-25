@@ -1,16 +1,21 @@
 <template>
   <div class="DialogBox">
     <!-- 对话框组件模拟 -->
-    <textarea name="" id="" :value="text"></textarea>
+    <textarea name="" id="" v-model="text" ></textarea>
     <button class="file" @click="sending"></button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+const emits = defineEmits(['sending'])
 const text = ref('')
 const sending = () => {
   if (text.value === '') {
+  }else {
+    // 传给对话内容组件处理
+    emits('sending',text.value)
+    text.value = ''
   }
 }
 </script>

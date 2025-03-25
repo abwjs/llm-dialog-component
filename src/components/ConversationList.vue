@@ -2,8 +2,7 @@
 <template>
   <div
     class="Box"
-    :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId
-    }"
+    :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId }"
     @click="ActiveFn"
   >
     <!-- 会话内容 -->
@@ -25,14 +24,14 @@
       <div class="fuzzy2"></div>
     </div>
     <!-- 弹出框 -->
-    <div class="Popup" v-if="Popupbol" ref="popupRef">
+    <div class="Popup" @click.stop v-if="Popupbol" ref="popupRef">
       <li>
         <el-icon>
           <EditPen size="20px" />
         </el-icon>
         <span>重命名</span>
       </li>
-      <li>
+      <li @click="removecoverstaion">
         <el-icon>
           <Delete size="20px" color="#ff4d4f" />
         </el-icon>
@@ -80,7 +79,9 @@ const show = () => {
 }
 
 //点击该会话后处理操作
-const ActiveFn = ()=>{
+const ActiveFn = () => {
+  console.log(id);
+
   // 改变当前会话id
   conversationStore.setConversationId(id)
   // 获取当前会话消息
@@ -91,6 +92,12 @@ const ActiveFn = ()=>{
 onBeforeUnmount(() => {
   document.removeEventListener('click', handleClickOutside)
 })
+
+//删除会话
+const removecoverstaion =()=>{
+
+  conversationStore.removeConversation(id)
+}
 </script>
 
 <style scoped lang="scss">
