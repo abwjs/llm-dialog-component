@@ -49,7 +49,6 @@ const processChunk = (chunk: string) => {
 // 发起对话请求
 const Talk = async () => {
   const ConversationStore = useConversationStore()
-
   const Obj = {
     method: 'post',
     path: 'v3/chat',
