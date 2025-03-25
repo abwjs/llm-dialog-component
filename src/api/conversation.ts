@@ -14,7 +14,7 @@ const params = <messageList>{
   bot_id,
 }
 
-//查看一个会话的消息列表
+//查看当前会话的消息列表
 export const ViewMessageList = () => {
   const ConversationStore = useConversationStore()
   const obj = {

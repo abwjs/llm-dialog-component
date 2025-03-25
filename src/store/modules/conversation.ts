@@ -34,6 +34,8 @@ const useConversationStore = defineStore('conversation', {
     },
     //获取当前的会话的信息列表
     GetContent() {
+      console.log(this.GetConversation()?.content);
+
       return this.GetConversation()?.content || []
     },
     //新建会话
@@ -56,10 +58,14 @@ const useConversationStore = defineStore('conversation', {
     },
     //删除会话
     removeConversation(id: string) {
-      this.Conversation_list =  this.Conversation_list.filter((item) => {
+      //清空当前会话id
+      this.ConversationsId = ''
+      this.Conversation_list = this.Conversation_list.filter((item) => {
         return item.Conversation_id !== id
       })
+
     },
+
   },
   persist: true,
 })
