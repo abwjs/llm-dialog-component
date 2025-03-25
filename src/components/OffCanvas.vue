@@ -41,7 +41,8 @@ const Scale = () => {
 }
 
 const CreateMessage = () => {
-  conversationStore.addConversation()
+  // 清空会话id
+  conversationStore.ConversationsId = ''
 }
 </script>
 

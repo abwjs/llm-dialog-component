@@ -80,10 +80,9 @@ const show = () => {
 
 //点击该会话后处理操作
 const ActiveFn = () => {
-  console.log(id);
-
   // 改变当前会话id
   conversationStore.setConversationId(id)
+
   // 获取当前会话消息
   conversationStore.GetConversation()
 }
@@ -94,9 +93,9 @@ onBeforeUnmount(() => {
 })
 
 //删除会话
-const removecoverstaion =()=>{
-
+const removecoverstaion = () => {
   conversationStore.removeConversation(id)
+  conversationStore.GetConversation()
 }
 </script>
 

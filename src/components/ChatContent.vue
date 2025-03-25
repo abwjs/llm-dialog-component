@@ -21,11 +21,13 @@
 </template>
 
 <script setup lang="ts">
-import { toRef } from 'vue';
+import { toRefs} from 'vue'
+import { Content } from '../types/conversation';
 
-const props = defineProps(['ContentList'])
-const ContentList = toRef(props.ContentList)
-console.log(ContentList.value);
+const props = defineProps<{
+  ContentList: Content[]
+}>()
+const {ContentList} = toRefs(props)
 
 </script>
 
