@@ -69,7 +69,6 @@ const chat_id = ref('')
 // 处理流式输出提取内容函数（使用buffer处理不完整行）
 
 const processChunk = (chunk: string) => {
-
   buffer.value += chunk
   const lines = buffer.value.split('\n')
   // 保留未处理完的部分
@@ -148,7 +147,6 @@ const sending = async (value: string) => {
   }
   //添加用户消息
   ContentList.value.push(obj as Content)
-
 }
 
 // 改变当前消息列表内容
@@ -156,7 +154,6 @@ const GetContentList = () => {
   const { GetContent } = Conversation
   //获取消息列表
   ContentList.value = GetContent()
-
 }
 
 //对当前id进行监听改变当前的显示模式

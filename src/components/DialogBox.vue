@@ -4,14 +4,18 @@
       <!-- 文件预览 -->
       <div class="Preview">
         <!-- 文件组件 -->
-        <div class="file" v-for="item in 10" :key="item">
+        <div class="file" v-for="item in FileArr" :key="item.id">
+          <div class="btn-remove">
+          <el-icon :size="15"
+          ><CloseBold /></el-icon>
+          </div>
           <!-- 文件图标 -->
-          <img src="../assets/img/logo.png" alt="">
+          <img src="../assets/img/logo.png" alt="" />
           <div class="content">
             <!-- 文件名字 -->
-            <h2>我不是文件我不是文件我不是文件</h2>
+            <h2>{{ item.title }}</h2>
             <!-- 文件格式大小 -->
-            <p>HTML 100MB</p>
+            <p>{{ item.fileobj }} {{ item.D }}</p>
           </div>
         </div>
       </div>
@@ -19,10 +23,15 @@
         <!-- 文本输入 -->
         <el-input v-model="text" style="width: 100%" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"
           resize="none" placeholder="输入消息，Enter 发送，Shift + Enter 换行" />
-        <!-- 文件上传 -->
+        <div class="postBox">
+          <!-- 文件上传 -->
+          <div class="f"></div>
+          <!-- 图片上传 -->
+          <div class="i"></div>
+          <!-- 发送消息 -->
         <button class="post" @click="sending"></button>
+        </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -30,7 +39,17 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 const emits = defineEmits(['sending'])
-const text = ref('')
+const text = ref<string>('')
+// 模拟数据
+const FileArr = ref([
+  {
+    id: '1',
+    title: '我不是文件我不是文件我不是文件我不是文件',
+    fileobj: 'HTML',
+    // 文件大小
+    D: '100MB'
+  }
+])
 const sending = () => {
   if (text.value === '') {
   } else {
@@ -79,6 +98,7 @@ const sending = () => {
       gap: 8px;
 
       .file {
+        position: relative;
         cursor: pointer;
         border-radius: 15px;
         height: 52px;
@@ -93,6 +113,27 @@ const sending = () => {
 
         &:hover {
           box-shadow: 0 5px 15px rgb(219, 220, 222);
+          .btn-remove {
+            display: flex;
+          }
+        }
+
+        //删除图标
+        .btn-remove {
+          display: none;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+          position: absolute;
+          justify-content: center;
+          align-items: center;
+          right: 5px;
+          top: 5px;
+          transition: all 0.1s;
+          &:hover {
+            background-color: rgb(71, 85, 105);
+            color: rgb(243, 244, 246);
+          }
         }
 
         // 文件的图标
@@ -115,19 +156,21 @@ const sending = () => {
             overflow: hidden;
             text-overflow: ellipsis;
           }
+
           p {
             font-size: 12px;
             opacity: 0.8;
             color: rgb(71, 85, 105);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+
           }
         }
       }
     }
 
     .Textarea {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       background-color: rgb(243, 244, 246);
       border: 0.5px solid rgba(219, 234, 254);
       border-radius: 20px;
@@ -146,9 +189,9 @@ const sending = () => {
           box-shadow: none;
         }
       }
-
-      .post {
-        position: absolute;
+      .postBox{
+        align-self: flex-end;
+        .post {
         right: 10px;
         bottom: 30px;
         cursor: pointer;
@@ -158,6 +201,8 @@ const sending = () => {
         border: 0;
         box-shadow: 0 0 10px rgba(25, 25, 25, 0.2);
       }
+      }
+
     }
   }
 }
@@ -166,6 +211,11 @@ const sending = () => {
   .DialogBox {
     width: 100%;
     max-width: 100%;
+    .Dialog {
+      .Preview {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
   }
 }
 </style>

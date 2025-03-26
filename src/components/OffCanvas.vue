@@ -21,6 +21,7 @@
           :key="item.Conversation_id"
           :Conversation="item"
         ></ConversationList>
+
       </div>
     </div>
   </div>
@@ -40,10 +41,14 @@ const Scale = () => {
   NavStore.navbol = !NavStore.navbol
 }
 
+// 新建对话
 const CreateMessage = () => {
+  // 收回侧边栏
+  NavStore.navbol = false
   // 清空会话id
   conversationStore.ConversationsId = ''
 }
+
 </script>
 
 <style scoped lang="scss">
@@ -76,7 +81,7 @@ const CreateMessage = () => {
   background-color: var(--nav-bg-color);
   display: flex;
   flex-direction: column;
-  z-index: 999;
+  z-index: 99;
   .Conversation {
     min-height: 0;
     flex: 1;
@@ -108,7 +113,11 @@ const CreateMessage = () => {
       padding-right: 10px;
       min-height: 0;
       flex: 1;
+
       overflow-y: auto;
+      overflow-x: visible;
+
+      clip-path: inset(0 -100px 0 0); /* 允许右侧溢出 100px（数值按需调整） */
     }
   }
 

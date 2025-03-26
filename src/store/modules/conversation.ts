@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { CreateConversations } from '@/api/conversation'
+import { CreateConversations, ViewMessageList } from '@/api/conversation'
 import type { conversation } from '@/types/conversation'
 interface conversationStore {
   dialog: boolean
@@ -28,13 +28,18 @@ const useConversationStore = defineStore('conversation', {
     setConversationId(id: string) {
       this.ConversationsId = id
     },
+
     //当前的会话的列表
     GetConversation() {
       return this.Conversation_list.find((item) => item.Conversation_id === this.ConversationsId)
     },
+
     //获取当前的会话的信息列表
     GetContent() {
-      console.log(this.GetConversation()?.content);
+      // 更新当前会话的消息列表
+      if (this.ConversationsId !== '') {
+        ViewMessageList()
+      }
       return this.GetConversation()?.content || []
     },
     //新建会话
@@ -62,9 +67,7 @@ const useConversationStore = defineStore('conversation', {
       this.Conversation_list = this.Conversation_list.filter((item) => {
         return item.Conversation_id !== id
       })
-
     },
-
   },
   persist: true,
 })
