@@ -6,7 +6,7 @@ import type { additional } from '@/types/Chatmessages'
 const { user_id, bot_id } = config
 
 // 发起对话请求
-export const Talk = async (additional_messages:additional[]) => {
+export const Talk = async (additional_messages: additional[]) => {
   const ConversationStore = useConversationStore()
   const Obj = {
     method: 'post',
@@ -16,7 +16,8 @@ export const Talk = async (additional_messages:additional[]) => {
       user_id,
       stream: true,
       auto_save_history: true,
-      additional_messages
+      // 发送的内容
+      additional_messages,
     },
     // 注意判断是不是内联对话框要不要传id
     params: {
@@ -25,6 +26,4 @@ export const Talk = async (additional_messages:additional[]) => {
   }
   // 返回给组件处理
   return http(Obj)
-
 }
-

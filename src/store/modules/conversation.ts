@@ -35,7 +35,6 @@ const useConversationStore = defineStore('conversation', {
     //获取当前的会话的信息列表
     GetContent() {
       console.log(this.GetConversation()?.content);
-
       return this.GetConversation()?.content || []
     },
     //新建会话

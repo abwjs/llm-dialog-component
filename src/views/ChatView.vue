@@ -60,7 +60,6 @@ const Scale = () => {
   })
 }
 
-
 // 接收内容
 const fullContent = ref<string>('')
 //buffer
@@ -70,7 +69,6 @@ const chat_id = ref('')
 // 处理流式输出提取内容函数（使用buffer处理不完整行）
 
 const processChunk = (chunk: string) => {
-  console.log(chunk);
 
   buffer.value += chunk
   const lines = buffer.value.split('\n')
@@ -86,7 +84,6 @@ const processChunk = (chunk: string) => {
       try {
         const data = JSON.parse(dataStr)
         chat_id.value = data.id
-        console.log(chat_id)
       } catch (error) {
         console.error('拿取chatid失败', error)
       }
@@ -100,8 +97,6 @@ const processChunk = (chunk: string) => {
 
           if (data.type === 'answer') {
             fullContent.value += data.content
-            console.log(data.content);
-
           }
         } catch (error) {
           console.error('解析 JSON 失败:', error)
@@ -112,40 +107,39 @@ const processChunk = (chunk: string) => {
   }
 }
 
-
 //对话框发送对话
 const sending = async (value: string) => {
   // 判断当前为点击创建对话的页面
   if (Conversation.ConversationsId === '') {
+    //创建会话
     Conversation.addConversation()
   }
   //发起对话附加消息参数
   const additional_messages: additional[] = [
     {
-      role:'user',
-      content:value,
-      content_type:'text'
-    }
+      role: 'user',
+      content: value,
+      content_type: 'text',
+    },
   ]
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const HTTP =Talk(additional_messages) as any
+  const HTTP = Talk(additional_messages) as any
   HTTP.then(async (res) => {
-      // 创建一个可读流
-      const reader = res.body.getReader()
-      const decoder = new TextDecoder('utf-8')
-      while (true) {
-        const { done, value } = await reader.read()
-        if (done) {
-          console.log('结束读取')
-          break
-        }
-        processChunk(decoder.decode(value, { stream: true }))
-        // 处理累积的消息内容
+    // 创建一个可读流
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder('utf-8')
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) {
+        console.log('结束读取')
+        break
       }
-    })
-    .catch((err) => {
-      console.log(err)
-    })
+      processChunk(decoder.decode(value, { stream: true }))
+      // 处理累积的消息内容
+    }
+  }).catch((err) => {
+    console.log(err)
+  })
 
   const obj = {
     role: 'user',
@@ -154,12 +148,12 @@ const sending = async (value: string) => {
   }
   //添加用户消息
   ContentList.value.push(obj as Content)
+
 }
 
 // 改变当前消息列表内容
 const GetContentList = () => {
   const { GetContent } = Conversation
-
   //获取消息列表
   ContentList.value = GetContent()
 
@@ -168,9 +162,11 @@ const GetContentList = () => {
 //对当前id进行监听改变当前的显示模式
 watch(
   () => Conversation.ConversationsId,
-  () => {
-
-    GetContentList()
+  (newValue, oldValue) => {
+    // 判断是不是新建的会话
+    if (oldValue !== '') {
+      GetContentList()
+    }
   },
 )
 
