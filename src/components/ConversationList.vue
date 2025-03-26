@@ -1,10 +1,7 @@
 <!-- 一个会话的组件 -->
 <template>
-  <div
-    class="Box"
-    :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId }"
-    @click="ActiveFn"
-  >
+  <div class="Box" :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId }"
+    @click="ActiveFn">
     <!-- 会话内容 -->
     <div class="CList">
       <!-- 会话标题 -->
@@ -44,8 +41,9 @@
 <script setup lang="ts">
 import { ref, onBeforeUnmount, nextTick, defineProps } from 'vue'
 import useConversationStore from '../store/modules/conversation'
+import useNavStore from '../store/modules/nav'
 const conversationStore = useConversationStore()
-
+const NavStore = useNavStore()
 const props = defineProps(['Conversation'])
 const Conversation = props.Conversation
 // 当前会话的id
@@ -78,8 +76,10 @@ const show = () => {
   }
 }
 
+
 //点击该会话后处理操作
 const ActiveFn = () => {
+  NavStore.navbol = false
   // 改变当前会话id
   conversationStore.setConversationId(id)
   // 获取当前会话消息
@@ -107,7 +107,7 @@ const removecoverstaion = () => {
   //弹出框
   .Popup {
     display: flex;
-    z-index: 999;
+    z-index: 99;
     flex-direction: column;
     padding: 3px;
     position: absolute;
@@ -214,7 +214,7 @@ const removecoverstaion = () => {
     }
 
     &:hover {
-      background-color: rgba(219, 234, 254);
+      background-color: rgba(225, 235, 248, 0.8);
 
       .fuzzy1 {
         opacity: 0;
@@ -223,11 +223,18 @@ const removecoverstaion = () => {
       // 当鼠标碰到会话列表时显示模糊
       .fuzzy2 {
         opacity: 1;
+        background: linear-gradient(90deg, rgba(249, 251, 255, 0) 0%, rgba(225, 235, 248, 0.8) 100%);
+
       }
 
       // 当鼠标碰到会话列表时显示 ...
       .more {
+        background-color:
+          rgba(225, 235, 248, 0.8);
         opacity: 1;
+        &:hover {
+          background-color: #fff;
+        }
       }
     }
   }
