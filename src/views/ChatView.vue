@@ -13,18 +13,15 @@
           <h2>我是OmniChat，开始对话吧</h2>
           <p>有什么可以帮你的？</p>
         </div>
-        <!-- 对话框组件模拟 -->
         <div class="ip">
           <textarea name="" id="" :value="text"></textarea>
-          <button class="file" @click="sending">
-
-          </button>
+          <button class="file" @click="sending"></button>
         </div>
+        <FileUpload class="fileload"></FileUpload> <!-- 放在底部 -->
       </div>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 import OffCanvas from '@/components/OffCanvas.vue'
 import {ref} from 'vue'
@@ -106,6 +103,12 @@ const sending = ()=>{
       }
     }
   }
+}
+.fileload{
+  position: absolute;
+  top: 59%;
+  transform: translateY(10px);
+  left: 67%;
 }
 
 //移动端适配

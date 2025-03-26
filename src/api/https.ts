@@ -1,32 +1,68 @@
-import { RequestInit } from 'node-fetch';
-import fetch from 'node-fetch';
+import config from '../assets/config'
+const { apiKey, Url } = config
 
-const BASE_URL = 'https://api.example.com'; // 修正了 URL 的格式
+interface Obj {
+  method: string
+  path: string
+  params?: any
+  data?: any
+}
 
-async function fetchApi<T>(url: string, options?: RequestInit): Promise<T> {
-  // 确保 body 类型兼容
-  if (options?.body instanceof ReadableStream) {
-    throw new TypeError('ReadableStream is not supported as body type.');
+const controller = new AbortController();
+//file判断是不是上传文件
+async function http(obj: Obj, file = false) {
+  const { method, path, params, data } = obj
+  let headers
+  // 非文件上传
+  if (!file) {
+    headers = {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-type': 'application/json',
+    }
   }
-
-  const response = await fetch(BASE_URL + url, options);
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
+  //文件上传
+  else {
+    headers = {
+      Authorization: `Bearer ${apiKey}`,
+    }
   }
+  // 拼接路径
+  let url: string = `${Url + path}`
+  if (params) {
+    //将params参数拼接为key=value&key=value
+    const str = new URLSearchParams(params).toString()
+    url += `?${str}`
+  }
+  let res
+  //有data是post请求
+  if (data) {
 
-  return response.json() as Promise<T>;
+    try{
+    res = await fetch(url, {
+      method,
+      headers,
+      body: JSON.stringify(data),
+      signal: controller.signal
+    })
+  }catch (error:any) {
+    if (error.name === 'AbortError') {
+      console.log('Fetch aborted', '拦截请求');
+    } else
+      console.error('Error:', error);
+  }
+    //get请求
+  } else {
+    res = await fetch(url, {
+      method,
+      headers,
+      signal: controller.signal
+    })
+  }
+  //流式对话
+  if(path ==='v3/chat') {
+    return res
+  }
+  return res?.json()
 }
 
-export async function get<T>(url: string): Promise<T> {
-  return fetchApi<T>(url, { method: 'GET' });
-}
-
-export async function post<T>(url: string, body: unknown, options?: RequestInit): Promise<T> {
-  return fetchApi<T>(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: typeof body === 'string' ? body : JSON.stringify(body), // 确保 body 是字符串
-    ...options,
-  });
-}
+export default http
