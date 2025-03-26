@@ -82,7 +82,6 @@ const show = () => {
 const ActiveFn = () => {
   // 改变当前会话id
   conversationStore.setConversationId(id)
-
   // 获取当前会话消息
   conversationStore.GetConversation()
 }
@@ -176,7 +175,7 @@ const removecoverstaion = () => {
       border-radius: 10px;
       align-items: center;
       justify-content: center;
-      z-index: 999;
+      z-index: 99;
       background-color: rgba(219, 234, 254);
 
       &:hover {

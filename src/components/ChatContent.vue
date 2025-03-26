@@ -1,12 +1,8 @@
 <!-- 消息列表组件 -->
 <template>
   <div class="chatBox">
-    <div
-      class="Message"
-      :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user' }"
-      v-for="item in ContentList"
-      :key="item.id"
-    >
+    <div class="Message" :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user' }"
+      v-for="item in ContentList" :key="item.id">
       <!-- ai回答 -->
       <div class="left chat" v-if="item.role === 'assistant'">
         <img src="../assets/img/logo.pngd" alt="" />
@@ -21,13 +17,13 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs} from 'vue'
+import { toRefs } from 'vue'
 import { Content } from '../types/conversation';
 
 const props = defineProps<{
   ContentList: Content[]
 }>()
-const {ContentList} = toRefs(props)
+const { ContentList } = toRefs(props)
 
 </script>
 

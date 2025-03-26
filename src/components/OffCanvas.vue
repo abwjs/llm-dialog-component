@@ -76,12 +76,15 @@ const CreateMessage = () => {
   background-color: var(--nav-bg-color);
   display: flex;
   flex-direction: column;
+  z-index: 999;
   .Conversation {
+    min-height: 0;
     flex: 1;
     padding: 20px;
+    padding-right: 0;
     display: flex;
     flex-direction: column;
-
+    justify-content: space-between;
     .Newconversation {
       margin-bottom: 20px;
       border: 0;
@@ -100,6 +103,12 @@ const CreateMessage = () => {
       &:hover {
         background-color: rgb(200, 225, 245);
       }
+    }
+    .content {
+      padding-right: 10px;
+      min-height: 0;
+      flex: 1;
+      overflow-y: auto;
     }
   }
 
