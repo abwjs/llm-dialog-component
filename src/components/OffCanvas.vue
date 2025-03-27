@@ -1,11 +1,11 @@
 <!-- 侧边导航栏 -->
 <template>
   <div :class="{ open: NavStore.navbol, scale: !NavStore.navbol }" class="nav" ref="nav">
-    <div class="header">
+    <header class="header">
       <h2 v-if="NavStore.navbol">OmniChat</h2>
       <!-- 切换按钮占位 -->
       <button class="bt" @click="Scale"></button>
-    </div>
+    </header>
     <div v-if="NavStore.navbol" class="Conversation">
       <!-- 新建对话按钮 -->
       <button @click="CreateMessage" class="Newconversation">
@@ -21,7 +21,6 @@
           :key="item.Conversation_id"
           :Conversation="item"
         ></ConversationList>
-
       </div>
     </div>
   </div>
@@ -48,7 +47,6 @@ const CreateMessage = () => {
   // 清空会话id
   conversationStore.ConversationsId = ''
 }
-
 </script>
 
 <style scoped lang="scss">

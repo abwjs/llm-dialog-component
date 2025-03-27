@@ -4,10 +4,10 @@ import config from '@/assets/config'
 import useConversationStore from '@/store/modules/conversation'
 import type { additional } from '@/types/Chatmessages'
 const { user_id, bot_id } = config
+const ConversationStore = useConversationStore()
 
 // 发起对话请求
 export const Talk = async (additional_messages: additional[]) => {
-  const ConversationStore = useConversationStore()
   const Obj = {
     method: 'post',
     path: 'v3/chat',
@@ -26,4 +26,26 @@ export const Talk = async (additional_messages: additional[]) => {
   }
   // 返回给组件处理
   return http(Obj)
+}
+
+const controller = new AbortController()
+//取消对话
+// chat_id是对话id
+export const CancelTalk = (chat_id: string) => {
+  controller.abort()
+  const obj = {
+    method: 'post',
+    path: '/v3/chat/cancel',
+    data: {
+      chat_id,
+      conversation_id: ConversationStore.ConversationsId,
+    },
+  }
+  http(obj)
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
