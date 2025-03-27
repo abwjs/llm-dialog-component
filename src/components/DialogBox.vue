@@ -2,12 +2,13 @@
   <div class="DialogBox">
     <div class="Dialog">
       <!-- 文件预览 -->
-      <div class="Preview">
+      <div class="Preview" :class="{ PreviewAction: FileArr.length !== 0 }">
         <!-- 文件组件 -->
         <div class="file" v-for="item in FileArr" :key="item.id">
-          <div class="btn-remove">
-          <el-icon :size="15"
-          ><CloseBold /></el-icon>
+          <div class="btn-remove" @click="removeFile(item.id)">
+            <el-icon :size="15">
+              <CloseBold />
+            </el-icon>
           </div>
           <!-- 文件图标 -->
           <img src="../assets/img/logo.png" alt="" />
@@ -25,11 +26,15 @@
           resize="none" placeholder="输入消息，Enter 发送，Shift + Enter 换行" />
         <div class="postBox">
           <!-- 文件上传 -->
-          <div class="f"></div>
+          <div class="Link">
+            <el-icon :size="20"><Paperclip /></el-icon>
+          </div>
           <!-- 图片上传 -->
-          <div class="i"></div>
+          <div class="i">
+            <el-icon :size="20"><Paperclip /></el-icon>
+          </div>
           <!-- 发送消息 -->
-        <button class="post" @click="sending"></button>
+          <button class="post" @click="sending"></button>
         </div>
       </div>
     </div>
@@ -47,16 +52,24 @@ const FileArr = ref([
     title: '我不是文件我不是文件我不是文件我不是文件',
     fileobj: 'HTML',
     // 文件大小
-    D: '100MB'
-  }
+    D: '100MB',
+  },
 ])
 const sending = () => {
   if (text.value === '') {
+    // 模拟提示框
+    console.log();
+
   } else {
     // 传给对话内容组件处理
     emits('sending', text.value)
     text.value = ''
   }
+}
+const removeFile = (id) => {
+  FileArr.value = FileArr.value.filter((item) => {
+    return item.id !== id
+  })
 }
 </script>
 
@@ -73,7 +86,6 @@ const sending = () => {
 
   .Dialog {
     background-color: #fff;
-    padding-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -84,11 +96,14 @@ const sending = () => {
     border: 0.5px solid rgba(219, 234, 254);
     box-shadow: 0 0 5px rgba(25, 25, 25, 0.2);
 
+    // 当有文件上传时
+    .PreviewAction {
+      padding: 10px;
+    }
+
     //文件预览 网格布局
     .Preview {
       width: 100%;
-      padding: 10px;
-      padding-top: 0;
       max-height: 180px;
       flex: 1;
       overflow-y: auto;
@@ -113,6 +128,7 @@ const sending = () => {
 
         &:hover {
           box-shadow: 0 5px 15px rgb(219, 220, 222);
+
           .btn-remove {
             display: flex;
           }
@@ -130,6 +146,7 @@ const sending = () => {
           right: 5px;
           top: 5px;
           transition: all 0.1s;
+
           &:hover {
             background-color: rgb(71, 85, 105);
             color: rgb(243, 244, 246);
@@ -161,7 +178,6 @@ const sending = () => {
             font-size: 12px;
             opacity: 0.8;
             color: rgb(71, 85, 105);
-
           }
         }
       }
@@ -189,20 +205,36 @@ const sending = () => {
           box-shadow: none;
         }
       }
-      .postBox{
-        align-self: flex-end;
-        .post {
-        right: 10px;
-        bottom: 30px;
-        cursor: pointer;
-        width: 25px;
-        height: 25px;
-        border-radius: 5px;
-        border: 0;
-        box-shadow: 0 0 10px rgba(25, 25, 25, 0.2);
-      }
-      }
 
+      .postBox {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+        gap: 15px;
+        .Link,.i {
+          width: 28px;
+          height: 28px;
+          border-radius: 10px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          transition: all 0.1s;
+          &:hover {
+            background-color: rgba(0,0,0,0.5);
+          }
+        }
+        .post {
+          right: 10px;
+          bottom: 30px;
+          cursor: pointer;
+          width: 25px;
+          height: 25px;
+          border-radius: 5px;
+          border: 0;
+          box-shadow: 0 0 10px rgba(25, 25, 25, 0.2);
+        }
+      }
     }
   }
 }
@@ -211,6 +243,7 @@ const sending = () => {
   .DialogBox {
     width: 100%;
     max-width: 100%;
+
     .Dialog {
       .Preview {
         grid-template-columns: 1fr 1fr;

@@ -1,7 +1,10 @@
 <!-- 一个会话的组件 -->
 <template>
-  <div class="Box" :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId }"
-    @click="ActiveFn">
+  <div
+    class="Box"
+    :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId }"
+    @click="ActiveFn"
+  >
     <!-- 会话内容 -->
     <div class="CList">
       <!-- 会话标题 -->
@@ -22,7 +25,7 @@
     </div>
     <!-- 弹出框 -->
     <div class="Popup" @click.stop v-if="Popupbol" ref="popupRef">
-      <li>
+      <li @click="getName">
         <el-icon>
           <EditPen size="20px" />
         </el-icon>
@@ -39,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, nextTick, defineProps } from 'vue'
+import { ref, onBeforeUnmount, nextTick, defineProps, watch } from 'vue'
 import useConversationStore from '../store/modules/conversation'
 import useNavStore from '../store/modules/nav'
 const conversationStore = useConversationStore()
@@ -52,10 +55,13 @@ const id = Conversation.Conversation_id
 const Popupbol = ref<boolean>(false)
 // 获取弹出框元素
 const popupRef = ref<HTMLElement | null>(null)
+//控制是否显示修改标题框
+
 
 // 点击弹出框外面就隐藏弹出框
-const handleClickOutside = (e: Event) => {
+const handleClickOutside = (e:Event) => {
   if (!popupRef.value || !popupRef.value.contains(e.target as Node)) {
+
     Popupbol.value = false
     document.removeEventListener('click', handleClickOutside)
   }
@@ -65,6 +71,7 @@ const handleClickOutside = (e: Event) => {
 const show = () => {
   // 改变控制弹出框变量
   Popupbol.value = !Popupbol.value
+  NavStore.id = id
   if (Popupbol.value) {
     // 使用 setTimeout 确保弹出框已渲染
     nextTick(() => {
@@ -75,7 +82,6 @@ const show = () => {
     document.removeEventListener('click', handleClickOutside)
   }
 }
-
 
 //点击该会话后处理操作
 const ActiveFn = () => {
@@ -93,9 +99,23 @@ onBeforeUnmount(() => {
 
 //删除会话
 const removecoverstaion = () => {
+  // 删除会话函数
   conversationStore.removeConversation(id)
+  // 改变当前会话
   conversationStore.GetConversation()
 }
+
+// 改会话标题
+const getName  =()=>{
+
+}
+
+// 监听弹出框的id，判断是否点击到了别的会话标题
+watch(()=>NavStore.id,(newValue)=>{
+  if(newValue!==id){
+    Popupbol.value = false
+  }
+})
 </script>
 
 <style scoped lang="scss">
@@ -113,8 +133,8 @@ const removecoverstaion = () => {
     position: absolute;
     width: 120px;
     height: 80px;
-    bottom: -50px;
-    right: -120px;
+    bottom: -80px;
+    right: 0px;
     transition: all 0.1s;
     box-shadow: 0 0 5px rgba(30, 30, 30, 0.1);
     border-radius: 15px;
@@ -175,7 +195,7 @@ const removecoverstaion = () => {
       border-radius: 10px;
       align-items: center;
       justify-content: center;
-      z-index: 99;
+      z-index: 9;
       background-color: rgba(219, 234, 254);
 
       &:hover {
@@ -213,7 +233,7 @@ const removecoverstaion = () => {
       background: linear-gradient(90deg, rgba(249, 251, 255, 0) 0%, rgba(219, 234, 254) 100%);
     }
 
-    &:hover {
+    &:hover{
       background-color: rgba(225, 235, 248, 0.8);
 
       .fuzzy1 {
@@ -223,14 +243,16 @@ const removecoverstaion = () => {
       // 当鼠标碰到会话列表时显示模糊
       .fuzzy2 {
         opacity: 1;
-        background: linear-gradient(90deg, rgba(249, 251, 255, 0) 0%, rgba(225, 235, 248, 0.8) 100%);
-
+        background: linear-gradient(
+          90deg,
+          rgba(249, 251, 255, 0) 0%,
+          rgba(225, 235, 248, 0.8) 100%
+        );
       }
 
       // 当鼠标碰到会话列表时显示 ...
       .more {
-        background-color:
-          rgba(225, 235, 248, 0.8);
+        background-color: rgba(225, 235, 248, 0.8);
         opacity: 1;
         &:hover {
           background-color: #fff;
@@ -242,9 +264,12 @@ const removecoverstaion = () => {
 
 /* 点击后样式 */
 .active {
+
   .CList {
     background-color: rgba(219, 234, 254);
-
+    &:hover {
+    background-color: rgba(219, 234, 254);
+  }
     .fuzzy1 {
       opacity: 0;
     }
