@@ -11,6 +11,7 @@
       <div class="left chat" v-if="item.role === 'assistant'">
         <img src="../assets/img/logo.pngd" alt="" />
         <span>{{ item.value }}</span>
+        <CopyButton :text="item.value"></CopyButton>
       </div>
       <!-- 用户回答 -->
       <div class="right chat" v-else>
@@ -23,6 +24,7 @@
 <script setup lang="ts">
 import { toRefs } from 'vue'
 import { Content } from '../types/conversation'
+import CopyButton from './CopyButton.vue'
 
 const props = defineProps<{
   ContentList: Content[]
