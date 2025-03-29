@@ -5,9 +5,9 @@ import useConversationStore from '@/store/modules/conversation'
 import type { additional } from '@/types/Chatmessages'
 const { user_id, bot_id } = config
 const ConversationStore = useConversationStore()
-
+type additionalStr = additional[]
 // 发起对话请求
-export const Talk = async (additional_messages: additional[]) => {
+export const Talk = async (additional_messages: additionalStr) => {
   const Obj = {
     method: 'post',
     path: 'v3/chat',

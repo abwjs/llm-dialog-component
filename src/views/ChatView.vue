@@ -3,10 +3,6 @@
     <!-- 侧边导航栏占位 -->
     <OffCanvas class="Offcanvas"></OffCanvas>
     <main class="main">
-      <!-- 修改会话标题 -->
-      <div class="SetTitle"></div>
-      <!-- 修改标题遮罩层 -->
-
       <!-- 遮罩层 -->
       <div class="MaskLayer" v-if="NavStore.navbol" @click="Scale"></div>
       <div class="nav">
@@ -198,30 +194,18 @@ onMounted(() => {
     background-color: var(--bg-color);
     height: 100vh;
 
-    //会话标题
-    // .SetTitle {
-    //   position: absolute;
-    //   left: 50%;
-    //   top: 120px;
-    //   transform: translateX(-50%);
-    //   z-index: 99;
-    //   width: 300px;
-    //   height: 120px;
-    //   border-radius: 15px;
-    //   background-color: #fff;
 
-    // }
 
     // 遮罩层
     .MaskLayer {
       display: none;
       position: absolute;
-        left: 0;
-        top: 0;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
+      left: 0;
+      top: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
     }
 
     //头部导航
@@ -321,7 +305,6 @@ onMounted(() => {
 
       .MaskLayer {
         display: block;
-
       }
 
       // 头部导航

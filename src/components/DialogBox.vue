@@ -22,8 +22,14 @@
       </div>
       <div class="Textarea">
         <!-- 文本输入 -->
-        <el-input v-model="text" style="width: 100%" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"
-          resize="none" placeholder="输入消息，Enter 发送，Shift + Enter 换行" />
+        <el-input
+          v-model="text"
+          style="width: 100%"
+          :autosize="{ minRows: 3, maxRows: 10 }"
+          type="textarea"
+          resize="none"
+          placeholder="输入消息，Enter 发送，Shift + Enter 换行"
+        />
         <div class="postBox">
           <!-- 文件上传 -->
           <div class="Link">
@@ -58,8 +64,7 @@ const FileArr = ref([
 const sending = () => {
   if (text.value === '') {
     // 模拟提示框
-    console.log();
-
+    console.log()
   } else {
     // 传给对话内容组件处理
     emits('sending', text.value)
@@ -211,7 +216,8 @@ const removeFile = (id) => {
         width: 100%;
         justify-content: flex-end;
         gap: 15px;
-        .Link,.i {
+        .Link,
+        .i {
           width: 28px;
           height: 28px;
           border-radius: 10px;
@@ -221,7 +227,7 @@ const removeFile = (id) => {
           cursor: pointer;
           transition: all 0.1s;
           &:hover {
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
           }
         }
         .post {

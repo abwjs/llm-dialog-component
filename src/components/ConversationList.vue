@@ -3,12 +3,16 @@
   <div
     class="Box"
     :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId }"
-    @click="ActiveFn"
   >
+    <div ref="SetInput" class="SetInput" v-if="SetTitleBol">
+      <input type="text" autofocus v-model="Conversation.Conversation_title">
+    </div>
     <!-- 会话内容 -->
-    <div class="CList">
+    <div class="CList" v-else
+    @click="ActiveFn"
+
+    >
       <!-- 会话标题 -->
-      <!-- 模拟数据 -->
       <div class="text">
         <h2>{{ Conversation.Conversation_title }}</h2>
       </div>
@@ -51,21 +55,21 @@ const props = defineProps(['Conversation'])
 const Conversation = props.Conversation
 // 当前会话的id
 const id = Conversation.Conversation_id
+const SetInput = ref<HTMLElement| null>(null)
 // 控制弹出框是否弹出
 const Popupbol = ref<boolean>(false)
 // 获取弹出框元素
 const popupRef = ref<HTMLElement | null>(null)
 //控制是否显示修改标题框
-
-
+const SetTitleBol = ref<boolean>(false)
 // 点击弹出框外面就隐藏弹出框
-const handleClickOutside = (e:Event) => {
+const handleClickOutside = (e: Event) => {
   if (!popupRef.value || !popupRef.value.contains(e.target as Node)) {
-
     Popupbol.value = false
     document.removeEventListener('click', handleClickOutside)
   }
 }
+
 
 // 点击...显示弹出框
 const show = () => {
@@ -85,6 +89,7 @@ const show = () => {
 
 //点击该会话后处理操作
 const ActiveFn = () => {
+  if(conversationStore.ConversationsId===id)return
   NavStore.navbol = false
   // 改变当前会话id
   conversationStore.setConversationId(id)
@@ -105,20 +110,45 @@ const removecoverstaion = () => {
   conversationStore.GetConversation()
 }
 
-// 改会话标题
-const getName  =()=>{
+const handleClickOutside2 = (e:Event)=>{
+  if (!SetInput.value || !SetInput.value.contains(e.target as Node)) {
+   SetTitleBol.value = false
+    document.removeEventListener('click', handleClickOutside2)
+  }
+}
 
+// 改会话标题
+const getName = () => {
+
+
+  // 关闭弹出框
+  NavStore.id = ''
+  // 显示修改标题框
+  SetTitleBol.value = true
+  if (SetTitleBol.value) {
+    // 使用 setTimeout 确保弹出框已渲染
+    nextTick(() => {
+      document.addEventListener('click', handleClickOutside2)
+    })
+  } else {
+    // 卸载document点击事件监听
+    document.removeEventListener('click', handleClickOutside2)
+  }
 }
 
 // 监听弹出框的id，判断是否点击到了别的会话标题
-watch(()=>NavStore.id,(newValue)=>{
-  if(newValue!==id){
-    Popupbol.value = false
-  }
-})
+watch(
+  () => NavStore.id,
+  (newValue) => {
+    if (newValue !== id) {
+      Popupbol.value = false
+    }
+  },
+)
 </script>
 
 <style scoped lang="scss">
+
 // 会话列表
 .Box {
   position: relative;
@@ -169,6 +199,25 @@ watch(()=>NavStore.id,(newValue)=>{
       }
     }
   }
+  //修改标题框
+  .SetInput {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    border-radius: 15px;
+    width: 100%;
+    height: 40px;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 15px;
+    border: 3px solid rgba(219, 234, 254);
+    input {
+      max-width: 100%;
+      font-size: 15px;
+      background-color: var(--nav-bg-color);
+    }
+  }
 
   // 会话内容
   .CList {
@@ -205,7 +254,7 @@ watch(()=>NavStore.id,(newValue)=>{
 
     //标题
     .text {
-      font-size: 14px;
+      font-size: 15px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -233,7 +282,7 @@ watch(()=>NavStore.id,(newValue)=>{
       background: linear-gradient(90deg, rgba(249, 251, 255, 0) 0%, rgba(219, 234, 254) 100%);
     }
 
-    &:hover{
+    &:hover {
       background-color: rgba(225, 235, 248, 0.8);
 
       .fuzzy1 {
@@ -264,12 +313,11 @@ watch(()=>NavStore.id,(newValue)=>{
 
 /* 点击后样式 */
 .active {
-
   .CList {
     background-color: rgba(219, 234, 254);
     &:hover {
-    background-color: rgba(219, 234, 254);
-  }
+      background-color: rgba(219, 234, 254);
+    }
     .fuzzy1 {
       opacity: 0;
     }
