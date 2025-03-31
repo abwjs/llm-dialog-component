@@ -5,10 +5,13 @@
     <!-- 自定义上传按钮，使用图片 -->
     <div class="upload-button">
       <img src="../assets/img/filelink.png" alt="上传" class="upload-image" @click="submitUpload" />
+      <div class="upload-tip">
+        上传最大文件不超过512 MB
+      </div>
     </div>
     <template #tip>
       <div class="el-upload__tip">
-        上传最大文件不超过512 MB
+        <!-- 提示信息默认隐藏 -->
       </div>
     </template>
   </el-upload>
@@ -88,5 +91,32 @@ const submitUpload = () => {
   width: 25px;
   height: auto;
   /* 根据需要调整图片大小 */
+}
+
+.upload-tip {
+  position: absolute;
+  bottom: 30px;
+  /* 调整提示信息的位置 */
+  left: -90px;
+  width: 200px;
+  /* height: 20px; */
+  line-height: 20px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  color: #333;
+  visibility: hidden;
+  transition: visibility 0.3s, opacity 0.3s;
+  opacity: 0;
+}
+
+.upload-button:hover .upload-tip {
+  visibility: visible;
+  /* 鼠标经过时显示 */
+  opacity: 1;
+  /* 鼠标经过时变为不透明 */
 }
 </style>
