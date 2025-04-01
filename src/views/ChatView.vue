@@ -62,13 +62,18 @@ const Scale = () => {
 
 // 接收内容
 const fullContent = ref<string>('')
+watch(fullContent,(newValue)=>{
+  if(newValue!=''){
+  ContentList.value[ContentList.value.length-1].value = newValue
+}})
 //buffer
-const buffer = ref('')
+const buffer = ref<string>('')
 //对话id
-const chat_id = ref('')
+const chat_id = ref<string>('')
 // 处理流式输出提取内容函数（使用buffer处理不完整行）
 
 const processChunk = (chunk: string) => {
+
   buffer.value += chunk
   const lines = buffer.value.split('\n')
   // 保留未处理完的部分
@@ -95,6 +100,7 @@ const processChunk = (chunk: string) => {
           const data = JSON.parse(dataStr)
 
           if (data.type === 'answer') {
+
             fullContent.value += data.content
           }
         } catch (error) {
@@ -108,6 +114,7 @@ const processChunk = (chunk: string) => {
 
 //对话框发送对话
 const sending = async (value: string) => {
+  fullContent.value = ''
   // 判断当前为点击创建对话的页面
   if (Conversation.ConversationsId === '') {
     //创建会话
@@ -127,6 +134,11 @@ const sending = async (value: string) => {
     // 创建一个可读流
     const reader = res.body.getReader()
     const decoder = new TextDecoder('utf-8')
+    ContentList.value.push({
+      role:'assistant',
+      value:fullContent.value,
+      id:'1'
+    })
     while (true) {
       const { done, value } = await reader.read()
       if (done) {
@@ -193,8 +205,6 @@ onMounted(() => {
     align-items: center;
     background-color: var(--bg-color);
     height: 100vh;
-
-
 
     // 遮罩层
     .MaskLayer {

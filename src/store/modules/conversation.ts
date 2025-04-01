@@ -38,15 +38,26 @@ const useConversationStore = defineStore('conversation', {
     GetContent() {
       // 更新当前会话的消息列表
       if (this.ConversationsId !== '') {
-        ViewMessageList()
+        ViewMessageList().then((res) => {
+          const { data } = res
+
+          this.Conversation_list.forEach((item) => {
+            if (item.Conversation_id == this.ConversationsId) {
+              item = data.map((item: { content: string; id: string; role: string }) => {
+                const { content, id, role } = item
+                return { id, role, value: content }
+              })
+            }
+          })
+        })
       }
+
       return this.GetConversation()?.content || []
     },
     //新建会话
     addConversation() {
       const res = CreateConversations()
       res.then(({ data }) => {
-        console.log(data)
         this.Conversation_list.push({
           // 会话id
           Conversation_id: data.id,

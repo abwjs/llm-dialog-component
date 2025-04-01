@@ -3,7 +3,7 @@ import useConversationStore from '@/store/modules/conversation'
 
 
 //查看当前会话的消息列表
-export const ViewMessageList = () => {
+export const ViewMessageList = async() => {
   const ConversationStore = useConversationStore()
   const obj = {
     method: 'post',
@@ -12,9 +12,7 @@ export const ViewMessageList = () => {
       conversation_id: ConversationStore.ConversationsId,
     },
   }
-  http(obj).then((res) => {
-    console.log(res)
-  })
+  return http(obj)
 }
 
 //创建会话

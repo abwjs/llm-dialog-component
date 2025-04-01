@@ -30,6 +30,8 @@ const props = defineProps<{
   ContentList: Content[]
 }>()
 const { ContentList } = toRefs(props)
+console.log(ContentList.value);
+
 </script>
 
 <style scoped lang="scss">
