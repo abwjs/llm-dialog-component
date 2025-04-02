@@ -2,10 +2,10 @@
   <div class="DialogBox">
     <div class="Dialog">
       <!-- 文件预览 -->
-      <div class="Preview" :class="{ PreviewAction: FileArr.length !== 0 }">
+      <div class="Preview" :class="{ PreviewAction: fileInfoList.length !== 0 }">
         <!-- 文件组件 -->
-        <div class="file" v-for="item in FileArr" :key="item.id">
-          <div class="btn-remove" @click="removeFile(item.id)">
+        <div class="file" v-for="info in fileInfoList" :key="info.id">
+          <div class="btn-remove" @click="removeFile(info.id)">
             <el-icon :size="15">
               <CloseBold />
             </el-icon>
@@ -14,9 +14,9 @@
           <img src="../assets/img/logo.png" alt="" />
           <div class="content">
             <!-- 文件名字 -->
-            <h2>{{ item.title }}</h2>
+            <h2>{{ info.name }}</h2>
             <!-- 文件格式大小 -->
-            <p>{{ item.fileobj }} {{ item.D }}</p>
+            <p>{{ formatFileSize(info.size) }}</p>
           </div>
         </div>
       </div>
@@ -26,13 +26,7 @@
           resize="none" placeholder="输入消息，Enter 发送，Shift + Enter 换行" />
         <div class="postBox">
           <!-- 文件上传 -->
-          <div class="Link">
-            <el-icon :size="20"><Paperclip /></el-icon>
-          </div>
-          <!-- 图片上传 -->
-          <div class="i">
-            <el-icon :size="20"><Paperclip /></el-icon>
-          </div>
+          <FileUpload class="fileload" @update-file-info="handleFileInfo" />
           <!-- 发送消息 -->
           <button class="post" @click="sending"></button>
         </div>
@@ -45,31 +39,38 @@
 import { ref } from 'vue'
 const emits = defineEmits(['sending'])
 const text = ref<string>('')
-// 模拟数据
-const FileArr = ref([
-  {
-    id: '1',
-    title: '我不是文件我不是文件我不是文件我不是文件',
-    fileobj: 'HTML',
-    // 文件大小
-    D: '100MB',
-  },
-])
+const fileInfoList = ref([])
+
+const handleFileInfo = (fileInfo) => {
+  fileInfoList.value.push(fileInfo)
+}
+
 const sending = () => {
   if (text.value === '') {
     // 模拟提示框
-    console.log();
-
+    console.log('消息不能为空')
   } else {
     // 传给对话内容组件处理
     emits('sending', text.value)
     text.value = ''
   }
 }
+
 const removeFile = (id) => {
-  FileArr.value = FileArr.value.filter((item) => {
-    return item.id !== id
-  })
+  fileInfoList.value = fileInfoList.value.filter((item) => item.id !== id)
+}
+
+// 格式化文件大小
+const formatFileSize = (size: number) => {
+  if (size < 1024) {
+    return `${size} B`
+  } else if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(2)} KB`
+  } else if (size < 1024 * 1024 * 1024) {
+    return `${(size / 1024 / 1024).toFixed(2)} MB`
+  } else {
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
+  }
 }
 </script>
 
@@ -193,7 +194,7 @@ const removeFile = (id) => {
       width: 100%;
       padding: 6px;
 
-      //输入框自定义样式s
+      //输入框自定义样式
       :deep(.el-textarea__inner) {
         border: none;
         background-color: rgb(243, 244, 246);
@@ -211,7 +212,8 @@ const removeFile = (id) => {
         width: 100%;
         justify-content: flex-end;
         gap: 15px;
-        .Link,.i {
+
+        .fileload {
           width: 28px;
           height: 28px;
           border-radius: 10px;
@@ -220,10 +222,12 @@ const removeFile = (id) => {
           align-items: center;
           cursor: pointer;
           transition: all 0.1s;
+
           &:hover {
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
           }
         }
+
         .post {
           right: 10px;
           bottom: 30px;

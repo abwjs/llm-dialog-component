@@ -11,6 +11,7 @@ declare module 'vue' {
     ChatContent: typeof import('./src/components/ChatContent.vue')['default']
     Conversation: typeof import('./src/components/Conversation.vue')['default']
     ConversationList: typeof import('./src/components/ConversationList.vue')['default']
+    CopyButton: typeof import('./src/components/CopyButton.vue')['default']
     DialogBox: typeof import('./src/components/DialogBox.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElCol: typeof import('element-plus/es')['ElCol']
