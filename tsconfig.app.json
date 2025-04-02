@@ -1,9 +1,16 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist/app", // 指定输出目录
-    "composite": true,       // 启用项目引用支持
-    "declaration": true      // 启用声明文件生成
+    "composite": true, // 允许项目引用
+    "noEmit": false,   // 必须允许生成文件（复合项目要求）
+    "declaration": true, // 必须生成声明文件
+"emitDeclarationOnly":true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+  "moduleResolution":"node"
+
   },
-  "include": ["src/app"]    // 根据实际项目结构调整 include 路径
 }
+

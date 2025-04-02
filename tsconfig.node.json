@@ -13,6 +13,11 @@
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
     "module": "ESNext",
     "moduleResolution": "Bundler",
+    "composite": true, // 允许项目引用
+    "noEmit": false,   // 必须允许生成文件（复合项目要求）
+    "declaration": true, // 必须生成声明文件
     "types": ["node"]
   }
 }
+
+

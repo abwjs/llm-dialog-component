@@ -1,14 +1,14 @@
 <!-- 侧边导航栏 -->
 <template>
   <div :class="{ open: NavStore.navbol, scale: !NavStore.navbol }" class="nav" ref="nav">
-    <div class="header">
+    <header class="header">
       <h2 v-if="NavStore.navbol">OmniChat</h2>
       <!-- 切换按钮占位 -->
       <button class="bt" @click="Scale"></button>
-    </div>
+    </header>
     <div v-if="NavStore.navbol" class="Conversation">
       <!-- 新建对话按钮 -->
-      <button class="Newconversation">
+      <button @click="CreateMessage" class="Newconversation">
         <el-icon color="#409efc" size="20px">
           <ChatLineRound />
         </el-icon>
@@ -19,6 +19,7 @@
         <ConversationList
           v-for="item in Conversation_list"
           :key="item.Conversation_id"
+          :Conversation="item"
         ></ConversationList>
       </div>
     </div>
@@ -37,6 +38,14 @@ const NavStore = useNavStore()
 const nav = ref()
 const Scale = () => {
   NavStore.navbol = !NavStore.navbol
+}
+
+// 新建对话
+const CreateMessage = () => {
+  // 收回侧边栏
+  NavStore.navbol = false
+  // 清空会话id
+  conversationStore.ConversationsId = ''
 }
 </script>
 
@@ -70,9 +79,15 @@ const Scale = () => {
   background-color: var(--nav-bg-color);
   display: flex;
   flex-direction: column;
+  z-index: 99;
   .Conversation {
+    min-height: 0;
     flex: 1;
     padding: 20px;
+    padding-right: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     .Newconversation {
       margin-bottom: 20px;
       border: 0;
@@ -91,6 +106,16 @@ const Scale = () => {
       &:hover {
         background-color: rgb(200, 225, 245);
       }
+    }
+    .content {
+      padding-right: 10px;
+      min-height: 0;
+      flex: 1;
+
+      overflow-y: auto;
+      overflow-x: visible;
+
+      clip-path: inset(0 -100px 0 0); /* 允许右侧溢出 100px（数值按需调整） */
     }
   }
 

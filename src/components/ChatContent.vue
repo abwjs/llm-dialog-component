@@ -3,25 +3,34 @@
   <div class="chatBox">
     <div
       class="Message"
-      :class="{ AILeft: item % 2 === 0, UserRight: item % 2 !== 0 }"
-      v-for="item in 100"
-      :key="item"
+      :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user' }"
+      v-for="item in ContentList"
+      :key="item.id"
     >
       <!-- ai回答 -->
-      <div class="left chat" v-if="item % 2 === 0">
-        <span
-          >11111111111111222111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</span
-        >
+      <div class="left chat" v-if="item.role === 'assistant'">
+        <img src="../assets/img/logo.pngd" alt="" />
+        <span>{{ item.value }}</span>
+        <CopyButton :text="item.value"></CopyButton>
       </div>
       <!-- 用户回答 -->
       <div class="right chat" v-else>
-        <span>11111111111121</span>
+        <span>{{ item.value }}</span>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { toRefs } from 'vue'
+import { Content } from '../types/conversation'
+import CopyButton from './CopyButton.vue'
+
+const props = defineProps<{
+  ContentList: Content[]
+}>()
+const { ContentList } = toRefs(props)
+</script>
 
 <style scoped lang="scss">
 ::-webkit-scrollbar {
@@ -46,14 +55,17 @@
 }
 
 .chatBox {
+  flex: 1;
   padding: 0 10px;
   width: 100%;
   overflow-y: auto;
+
   .Message {
     min-height: 30px;
     width: 100%;
     display: flex;
     margin: 20px 0;
+
     .chat {
       padding: 10px;
       display: flex;
@@ -62,12 +74,15 @@
       border-radius: 15px;
       max-width: 90%;
     }
+
     .left {
       background-color: #f4f4f4;
     }
+
     .right {
       background-color: rgba(219, 234, 254);
     }
+
     span {
       border-radius: 10px;
       word-break: break-all;
