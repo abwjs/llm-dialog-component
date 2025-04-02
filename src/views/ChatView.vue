@@ -20,19 +20,15 @@
           <h2>我是OmniChat，开始对话吧</h2>
           <p>有什么可以帮你的？</p>
         </div>
-        <!-- 对话框组件 -->
-        <DialogBox></DialogBox>
-      </div>
-      <!-- 有消息时显示的组件 -->
-      <div class="Form2 Form" v-else>
-        <!-- 消息列表组件 -->
-        <ChatContent></ChatContent>
-        <DialogBox></DialogBox>
+        <div class="ip">
+          <textarea name="" id="" :value="text"></textarea>
+          <button class="file" @click="sending"></button>
+        </div>
+        <FileUpload class="fileload"></FileUpload> <!-- 放在底部 -->
       </div>
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
 // 侧边导航栏组件
 import OffCanvas from '@/components/OffCanvas.vue'
@@ -152,9 +148,39 @@ const Scale = () => {
       padding-top: 30px;
       width: 750px;
       position: relative;
-      overflow-y: auto;
+      width: 600px;
+      height: 125px;
+      border-radius: 30px;
+      background-color: rgb(243, 244, 246);
+      padding: 10px;
+      textarea {
+        width: 100%;
+        height: 100%;
+        object-fit: none;
+        border: 0;
+        font-size: 15px;
+      background-color: rgb(243, 244, 246);
+      resize: none;
+      }
+      .file {
+        position: absolute;
+        right: 10px;
+        bottom: 5px;
+        cursor: pointer;
+        width: 25px;
+        height: 25px;
+        border-radius: 5px;
+        border: 0;
+        box-shadow: 0  0 10px rgba(25,25,25,0.2);
+      }
     }
   }
+}
+.fileload{
+  position: absolute;
+  top: 59%;
+  transform: translateY(10px);
+  left: 67%;
 }
 
 //移动端适配
