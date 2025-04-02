@@ -36,42 +36,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const emits = defineEmits(['sending'])
-const text = ref<string>('')
-const fileInfoList = ref([])
+import { ref } from 'vue';
+
+const emits = defineEmits(['sending']);
+const text = ref<string>('');
+const fileInfoList = ref([]);
 
 const handleFileInfo = (fileInfo) => {
-  fileInfoList.value.push(fileInfo)
-}
+  fileInfo.id = Date.now().toString(); // 为每个文件生成一个唯一的 ID
+  fileInfoList.value.push(fileInfo);
+};
 
 const sending = () => {
   if (text.value === '') {
-    // 模拟提示框
-    console.log('消息不能为空')
+    console.log('消息不能为空');
   } else {
-    // 传给对话内容组件处理
-    emits('sending', text.value)
-    text.value = ''
+    emits('sending', text.value);
+    text.value = '';
   }
-}
+};
 
 const removeFile = (id) => {
-  fileInfoList.value = fileInfoList.value.filter((item) => item.id !== id)
-}
+  console.log(`删除文件，ID: ${id}`);
+  fileInfoList.value = fileInfoList.value.filter((item) => {
+    console.log(`过滤文件，ID: ${item.id}`);
+    return item.id !== id;
+  });
+};
 
 // 格式化文件大小
 const formatFileSize = (size: number) => {
   if (size < 1024) {
-    return `${size} B`
+    return `${size} B`;
   } else if (size < 1024 * 1024) {
-    return `${(size / 1024).toFixed(2)} KB`
+    return `${(size / 1024).toFixed(2)} KB`;
   } else if (size < 1024 * 1024 * 1024) {
-    return `${(size / 1024 / 1024).toFixed(2)} MB`
+    return `${(size / 1024 / 1024).toFixed(2)} MB`;
   } else {
-    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
   }
-}
+};
 </script>
 
 <style scoped lang="scss">
