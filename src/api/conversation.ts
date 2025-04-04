@@ -1,15 +1,13 @@
 import http from './http'
-import useConversationStore from '@/store/modules/conversation'
 
 
 //查看当前会话的消息列表
-export const ViewMessageList = async() => {
-  const ConversationStore = useConversationStore()
+export const ViewMessageList = async(conversation_id:string) => {
   const obj = {
     method: 'post',
     path: 'v1/conversation/message/list',
     params: {
-      conversation_id: ConversationStore.ConversationsId,
+      conversation_id
     },
   }
   return http(obj)

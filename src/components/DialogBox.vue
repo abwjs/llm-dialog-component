@@ -71,7 +71,7 @@ const sending = () => {
     text.value = ''
   }
 }
-const removeFile = (id) => {
+const removeFile = (id:string) => {
   FileArr.value = FileArr.value.filter((item) => {
     return item.id !== id
   })

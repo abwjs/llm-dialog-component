@@ -9,7 +9,7 @@
         <!-- 侧边框按钮 -->
         <button class="headerbt" v-if="!NavStore.navbol" @click="Scale"></button>
         <!-- 问题标题 -->
-        <h2 v-if="true">{{ MessageTitle }}</h2>
+        <h2 v-if="true">{{ ConversationTitle }}</h2>
         <!-- 返回按钮 -->
         <router-link to="/" class="active"></router-link>
       </div>
@@ -26,7 +26,7 @@
       <!-- 有消息时显示的组件 -->
       <div class="Form2 Form" v-else>
         <!-- 消息列表组件 -->
-        <ChatContent v-if="ContentList.length > 0" :ContentList="ContentList"></ChatContent>
+        <ChatContent  :ContentList="ContentList"></ChatContent>
         <!-- 对话框组件 -->
         <DialogBox @sending="sending"></DialogBox>
       </div>
@@ -44,28 +44,25 @@ import ChatContent from '../components/ChatContent.vue'
 import useNavStore from '../store/modules/nav'
 import useConversationStore from '../store/modules/conversation'
 import { Talk } from '../api/chat'
-import { onMounted, ref, watch } from 'vue'
-import type { Content } from '../types/conversation'
+import {  onMounted, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { additional } from '../types/Chatmessages'
-const Conversation = useConversationStore()
+const ConversationStore = useConversationStore()
 
-const MessageTitle = ref('')
 const NavStore = useNavStore()
-const ContentList = ref<Content[]>([])
-
+const {ContentList,ConversationsId,ConversationTitle} = storeToRefs(ConversationStore)
 // 修改导航栏隐藏显示
 const Scale = () => {
   NavStore.$patch((store) => {
     store.navbol = !store.navbol
   })
 }
-
+onMounted(()=>{
+  ConversationStore.GetContent()}
+)
 // 接收内容
 const fullContent = ref<string>('')
-watch(fullContent,(newValue)=>{
-  if(newValue!=''){
-  ContentList.value[ContentList.value.length-1].value = newValue
-}})
+
 //buffer
 const buffer = ref<string>('')
 //对话id
@@ -100,8 +97,8 @@ const processChunk = (chunk: string) => {
           const data = JSON.parse(dataStr)
 
           if (data.type === 'answer') {
-
             fullContent.value += data.content
+            ConversationStore.setAIStream(data.content)
           }
         } catch (error) {
           console.error('解析 JSON 失败:', error)
@@ -116,11 +113,12 @@ const processChunk = (chunk: string) => {
 const sending = async (value: string) => {
   fullContent.value = ''
   // 判断当前为点击创建对话的页面
-  if (Conversation.ConversationsId === '') {
+  if (ConversationsId.value === '') {
     //创建会话
-    Conversation.addConversation()
+    await ConversationStore.addConversation()
   }
-  //发起对话附加消息参数
+
+  //发起对话消息
   const additional_messages: additional[] = [
     {
       role: 'user',
@@ -128,17 +126,16 @@ const sending = async (value: string) => {
       content_type: 'text',
     },
   ]
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const HTTP = Talk(additional_messages) as any
+  const HTTP = Talk(additional_messages)
   HTTP.then(async (res) => {
     // 创建一个可读流
     const reader = res.body.getReader()
     const decoder = new TextDecoder('utf-8')
-    ContentList.value.push({
-      role:'assistant',
-      value:fullContent.value,
-      id:'1'
-    })
+    //增加用户消息
+    ConversationStore.setUserMessage(value)
+    // 增加ai消息占位
+    ConversationStore.setAIMessage()
+
     while (true) {
       const { done, value } = await reader.read()
       if (done) {
@@ -151,43 +148,7 @@ const sending = async (value: string) => {
   }).catch((err) => {
     console.log(err)
   })
-
-  const obj = {
-    role: 'user',
-    value,
-    id: '1',
-  }
-  //添加用户消息
-  ContentList.value.push(obj as Content)
 }
-
-// 改变当前消息列表内容
-const GetContentList = () => {
-  const { GetContent } = Conversation
-  //获取消息列表
-  ContentList.value = GetContent()
-}
-
-//对当前id进行监听改变当前的显示模式
-watch(
-  () => Conversation.ConversationsId,
-  (newValue, oldValue) => {
-    // 判断是不是新建的会话
-    if (oldValue !== '') {
-      GetContentList()
-    }
-  },
-)
-
-onMounted(() => {
-  //获取消息列表
-  GetContentList()
-  // 有消息才获取标题
-  if (!ContentList.value) {
-    //获取标题
-    MessageTitle.value = Conversation.GetConversation().Conversation_title
-  }
-})
 </script>
 
 <style scoped lang="scss">

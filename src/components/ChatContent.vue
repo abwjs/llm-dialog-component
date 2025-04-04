@@ -10,12 +10,12 @@
       <!-- ai回答 -->
       <div class="left chat" v-if="item.role === 'assistant'">
         <img src="../assets/img/logo.pngd" alt="" />
-        <span>{{ item.value }}</span>
-        <CopyButton :text="item.value"></CopyButton>
+        <span>{{ item.content }}</span>
+        <CopyButton :text="item.content"></CopyButton>
       </div>
       <!-- 用户回答 -->
       <div class="right chat" v-else>
-        <span>{{ item.value }}</span>
+        <span>{{ item.content }}</span>
       </div>
     </div>
   </div>
@@ -30,7 +30,6 @@ const props = defineProps<{
   ContentList: Content[]
 }>()
 const { ContentList } = toRefs(props)
-console.log(ContentList.value);
 
 </script>
 

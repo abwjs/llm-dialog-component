@@ -90,11 +90,10 @@ const show = () => {
 //点击该会话后处理操作
 const ActiveFn = () => {
   if(conversationStore.ConversationsId===id)return
-  NavStore.navbol = false
   // 改变当前会话id
   conversationStore.setConversationId(id)
   // 获取当前会话消息
-  conversationStore.GetConversation()
+  conversationStore.GetContent()
 }
 
 // 组件卸载前移除监听

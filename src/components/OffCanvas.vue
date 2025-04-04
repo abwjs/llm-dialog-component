@@ -46,6 +46,7 @@ const CreateMessage = () => {
   NavStore.navbol = false
   // 清空会话id
   conversationStore.ConversationsId = ''
+  conversationStore.GetContent()
 }
 </script>
 
