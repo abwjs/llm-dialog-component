@@ -200,13 +200,15 @@ watch(
     border-radius: 15px;
     width: 100%;
     height: 40px;
-    padding: 10px;
+    padding: 8px 6px;
     cursor: pointer;
     border-radius: 15px;
     border: 3px solid rgba(219, 234, 254);
     input {
       max-width: 100%;
       font-size: 15px;
+    font-family: 'Arial';
+
       background-color: var(--nav-bg-color);
     }
   }

@@ -33,14 +33,13 @@
     </main>
   </div>
 </template>
-
 <script setup lang="ts">
 // 侧边导航栏组件
 import OffCanvas from '@/components/OffCanvas.vue'
 // 对话框组件
-import DialogBox from '../components/DialogBox.vue'
+import DialogBox from '@/components/DialogBox.vue'
 // 消息列表组件
-import ChatContent from '../components/ChatContent.vue'
+import ChatContent from '@/components/ChatContent.vue'
 import useNavStore from '../store/modules/nav'
 import useConversationStore from '../store/modules/conversation'
 import { onMounted } from 'vue'

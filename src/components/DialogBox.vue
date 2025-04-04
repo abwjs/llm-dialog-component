@@ -2,10 +2,10 @@
   <div class="DialogBox">
     <div class="Dialog">
       <!-- 文件预览 -->
-      <div class="Preview" :class="{ PreviewAction: FileArr.length !== 0 }">
+      <div class="Preview" :class="{ PreviewAction: fileInfoList.length !== 0 }">
         <!-- 文件组件 -->
-        <div class="file" v-for="item in FileArr" :key="item.id">
-          <div class="btn-remove" @click="removeFile(item.id)">
+        <div class="file" v-for="info in fileInfoList" :key="info.id">
+          <div class="btn-remove" @click="removeFile(info.id)">
             <el-icon :size="15">
               <CloseBold />
             </el-icon>
@@ -14,9 +14,9 @@
           <img src="../assets/img/logo.png" alt="" />
           <div class="content">
             <!-- 文件名字 -->
-            <h2>{{ item.title }}</h2>
+            <h2>{{ info.name }}</h2>
             <!-- 文件格式大小 -->
-            <p>{{ item.fileobj }} {{ item.D }}</p>
+            <p>{{ formatFileSize(info.size) }}</p>
           </div>
         </div>
       </div>
@@ -32,13 +32,7 @@
         />
         <div class="postBox">
           <!-- 文件上传 -->
-          <div class="Link">
-            <el-icon :size="20"><Paperclip /></el-icon>
-          </div>
-          <!-- 图片上传 -->
-          <div class="i">
-            <el-icon :size="20"><Paperclip /></el-icon>
-          </div>
+          <FileUpload class="fileload" @update-file-info="handleFileInfo" />
           <!-- 发送消息 -->
           <button class="post" @click="sending"></button>
         </div>
@@ -60,21 +54,38 @@ const {  ConversationsId } = storeToRefs(ConversationStore)
 
 const text = ref<string>('')
 // 模拟数据
-const FileArr = ref([
-  {
-    id: '1',
-    title: '我不是文件我不是文件我不是文件我不是文件',
-    fileobj: 'HTML',
-    // 文件大小
-    D: '100MB',
-  },
-])
 
-const removeFile = (id: string) => {
-  FileArr.value = FileArr.value.filter((item) => {
-    return item.id !== id
-  })
-}
+
+const fileInfoList = ref([]);
+
+const handleFileInfo = (fileInfo) => {
+  fileInfo.id = Date.now().toString(); // 为每个文件生成一个唯一的 ID
+  fileInfoList.value.push(fileInfo);
+};
+
+
+const removeFile = (id) => {
+  console.log(`删除文件，ID: ${id}`);
+  fileInfoList.value = fileInfoList.value.filter((item) => {
+    console.log(`过滤文件，ID: ${item.id}`);
+    return item.id !== id;
+  });
+};
+
+// 格式化文件大小
+const formatFileSize = (size: number) => {
+  if (size < 1024) {
+    return `${size} B`;
+  } else if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(2)} KB`;
+  } else if (size < 1024 * 1024 * 1024) {
+    return `${(size / 1024 / 1024).toFixed(2)} MB`;
+  } else {
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
+  }
+};
+
+
 
 // 接收内容
 const fullContent = ref<string>('')
@@ -293,7 +304,7 @@ const sending = async () => {
       width: 100%;
       padding: 6px;
 
-      //输入框自定义样式s
+      //输入框自定义样式
       :deep(.el-textarea__inner) {
         border: none;
         background-color: rgb(243, 244, 246);
@@ -311,8 +322,8 @@ const sending = async () => {
         width: 100%;
         justify-content: flex-end;
         gap: 15px;
-        .Link,
-        .i {
+
+        .fileload {
           width: 28px;
           height: 28px;
           border-radius: 10px;
@@ -321,10 +332,12 @@ const sending = async () => {
           align-items: center;
           cursor: pointer;
           transition: all 0.1s;
+
           &:hover {
             background-color: rgba(0, 0, 0, 0.5);
           }
         }
+
         .post {
           right: 10px;
           bottom: 30px;
