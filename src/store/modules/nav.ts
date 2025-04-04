@@ -7,7 +7,7 @@ const useNavStore = defineStore('nav', {
       // 对话框组件显示与隐藏
       dialog: false,
       // 弹出框的id
-      id:''
+      id: '',
     }
   },
   actions: {},

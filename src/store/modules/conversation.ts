@@ -1,26 +1,49 @@
 import { defineStore } from 'pinia'
 import { CreateConversations, ViewMessageList } from '@/api/conversation'
-import type { conversation } from '@/types/conversation'
-interface conversationStore {
-  dialog: boolean
-  // 当前会话id
-  ConversationsId: string
-  //会话列表
-  Conversation_list: conversation[]
-}
+import type { Content, conversation } from '@/types/conversation'
 
 const useConversationStore = defineStore('conversation', {
-  state: (): conversationStore => {
+  state: () => {
     return {
       // 对话框组件显示与隐藏
       dialog: false,
       // 当前会话id
       ConversationsId: '',
       //会话列表
-      Conversation_list: [],
+      Conversation_list: [] as conversation[],
+      //当前会话消息列表
+      ContentList: [] as Content[],
     }
   },
+  getters: {
+    //当前会话标题
+    ConversationTitle(state) {
+      return state.Conversation_list.find((item) => item.Conversation_id == this.ConversationsId)
+        ?.Conversation_title
+    },
+  },
   actions: {
+    // 增加用户消息
+    setUserMessage(content: string) {
+      this.ContentList.push({
+        role: 'user',
+        content,
+        id: '1',
+      })
+    },
+    // 初始化ai消息占位
+    setAIMessage() {
+      this.ContentList.push({
+        role: 'assistant',
+        content: '',
+        id: '1',
+      })
+    },
+    // 流式增加ai消息
+    setAIStream(chunk: string) {
+      const content = this.ContentList[this.ContentList.length - 1] as Content
+      content.content += chunk
+    },
     //进行一次对话
     setMessage() {},
 
@@ -31,39 +54,60 @@ const useConversationStore = defineStore('conversation', {
 
     //当前的会话的列表
     GetConversation() {
-      return this.Conversation_list.find((item) => item.Conversation_id === this.ConversationsId)
+      return this.Conversation_list.find((item) => item.Conversation_id == this.ConversationsId)
     },
 
     //获取当前的会话的信息列表
-    GetContent() {
-      // 更新当前会话的消息列表
-      if (this.ConversationsId !== '') {
-        ViewMessageList()
+    async GetContent() {
+      if (!this.ConversationsId) {
+        this.ContentList = []
+        return
       }
-      return this.GetConversation()?.content || []
-    },
-    //新建会话
-    addConversation() {
-      const res = CreateConversations()
-      res.then(({ data }) => {
+      //调用获取消息列表api
+      try {
+        const { data } = await ViewMessageList(this.ConversationsId)
+        data.reverse()
         console.log(data)
-        this.Conversation_list.push({
-          // 会话id
-          Conversation_id: data.id,
-          // 会话标题
-          Conversation_title: '新建对话',
-          // 会话内容列表
-          content: [],
-          // 时间
-          createdAt: data.created_at,
+
+        this.ContentList = data.map(({ id, role, content }: Content) => {
+          return {
+            id,
+            content,
+            role,
+          }
         })
-        this.ConversationsId = data.id
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    //修改会话标题
+    setConversationTitle(Conversation_title: string, Conversation_id: string) {
+      const conversation = this.Conversation_list.find(
+        (item) => item.Conversation_id == Conversation_id,
+      ) as conversation
+      conversation.Conversation_title = Conversation_title
+    },
+
+    //新建会话
+    async addConversation() {
+      const { data } = await CreateConversations()
+      this.Conversation_list.push({
+        // 会话id
+        Conversation_id: data.id,
+        // 会话标题
+        Conversation_title: '新建对话',
+        // 时间
+        createdAt: data.created_at,
       })
+      this.ConversationsId = data.id
     },
     //删除会话
     removeConversation(id: string) {
       //清空当前会话id
       this.ConversationsId = ''
+      // 更新消息列表
+      this.GetContent()
       this.Conversation_list = this.Conversation_list.filter((item) => {
         return item.Conversation_id !== id
       })
