@@ -50,42 +50,38 @@ import useConversationStore from '../store/modules/conversation'
 
 const ConversationStore = useConversationStore()
 
-const {  ConversationsId } = storeToRefs(ConversationStore)
+const { ConversationsId } = storeToRefs(ConversationStore)
 
 const text = ref<string>('')
 // 模拟数据
 
-
-const fileInfoList = ref([]);
+const fileInfoList = ref([])
 
 const handleFileInfo = (fileInfo) => {
-  fileInfo.id = Date.now().toString(); // 为每个文件生成一个唯一的 ID
-  fileInfoList.value.push(fileInfo);
-};
-
+  fileInfo.id = Date.now().toString() // 为每个文件生成一个唯一的 ID
+  fileInfoList.value.push(fileInfo)
+}
 
 const removeFile = (id) => {
-  console.log(`删除文件，ID: ${id}`);
+  console.log(`删除文件，ID: ${id}`)
   fileInfoList.value = fileInfoList.value.filter((item) => {
-    console.log(`过滤文件，ID: ${item.id}`);
-    return item.id !== id;
-  });
-};
+    console.log(`过滤文件，ID: ${item.id}`)
+    return item.id !== id
+  })
+}
 
 // 格式化文件大小
 const formatFileSize = (size: number) => {
   if (size < 1024) {
-    return `${size} B`;
+    return `${size} B`
   } else if (size < 1024 * 1024) {
-    return `${(size / 1024).toFixed(2)} KB`;
+    return `${(size / 1024).toFixed(2)} KB`
   } else if (size < 1024 * 1024 * 1024) {
-    return `${(size / 1024 / 1024).toFixed(2)} MB`;
+    return `${(size / 1024 / 1024).toFixed(2)} MB`
   } else {
-    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
   }
-};
-
-
+}
 
 // 接收内容
 const fullContent = ref<string>('')
@@ -137,8 +133,8 @@ const processChunk = (chunk: string) => {
 
 //对话框发送对话
 const sending = async () => {
-  if(text.value == ''){
-    console.log('模拟无消息提示框');
+  if (text.value == '') {
+    console.log('模拟无消息提示框')
   }
   fullContent.value = ''
   // 判断当前为点击创建对话的页面
@@ -157,7 +153,6 @@ const sending = async () => {
   ]
   const HTTP = Talk(additional_messages)
   HTTP.then(async (res) => {
-
     // 创建一个可读流
     const reader = res.body.getReader()
     const decoder = new TextDecoder('utf-8')
@@ -179,9 +174,6 @@ const sending = async () => {
     console.log(err)
   })
 }
-
-
-
 </script>
 
 <style scoped lang="scss">

@@ -59,7 +59,6 @@ const useConversationStore = defineStore('conversation', {
 
     //获取当前的会话的信息列表
     async GetContent() {
-
       if (!this.ConversationsId) {
         this.ContentList = []
         return
@@ -68,7 +67,7 @@ const useConversationStore = defineStore('conversation', {
       try {
         const { data } = await ViewMessageList(this.ConversationsId)
         data.reverse()
-        console.log(data);
+        console.log(data)
 
         this.ContentList = data.map(({ id, role, content }: Content) => {
           return {

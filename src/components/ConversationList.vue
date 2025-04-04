@@ -207,7 +207,7 @@ watch(
     input {
       max-width: 100%;
       font-size: 15px;
-    font-family: 'Arial';
+      font-family: 'Arial';
 
       background-color: var(--nav-bg-color);
     }

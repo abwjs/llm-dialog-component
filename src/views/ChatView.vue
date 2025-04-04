@@ -56,7 +56,6 @@ const Scale = () => {
 onMounted(() => {
   ConversationStore.GetContent()
 })
-
 </script>
 
 <style scoped lang="scss">
