@@ -5,13 +5,10 @@
     :class="{ active: Conversation.Conversation_id === conversationStore.ConversationsId }"
   >
     <div ref="SetInput" class="SetInput" v-if="SetTitleBol">
-      <input type="text" autofocus v-model="Conversation.Conversation_title">
+      <input type="text" autofocus v-model="Conversation.Conversation_title" />
     </div>
     <!-- 会话内容 -->
-    <div class="CList" v-else
-    @click="ActiveFn"
-
-    >
+    <div class="CList" v-else @click="ActiveFn">
       <!-- 会话标题 -->
       <div class="text">
         <h2>{{ Conversation.Conversation_title }}</h2>
@@ -55,7 +52,7 @@ const props = defineProps(['Conversation'])
 const Conversation = props.Conversation
 // 当前会话的id
 const id = Conversation.Conversation_id
-const SetInput = ref<HTMLElement| null>(null)
+const SetInput = ref<HTMLElement | null>(null)
 // 控制弹出框是否弹出
 const Popupbol = ref<boolean>(false)
 // 获取弹出框元素
@@ -69,7 +66,6 @@ const handleClickOutside = (e: Event) => {
     document.removeEventListener('click', handleClickOutside)
   }
 }
-
 
 // 点击...显示弹出框
 const show = () => {
@@ -89,7 +85,7 @@ const show = () => {
 
 //点击该会话后处理操作
 const ActiveFn = () => {
-  if(conversationStore.ConversationsId===id)return
+  if (conversationStore.ConversationsId === id) return
   // 改变当前会话id
   conversationStore.setConversationId(id)
   // 获取当前会话消息
@@ -109,17 +105,15 @@ const removecoverstaion = () => {
   conversationStore.GetConversation()
 }
 
-const handleClickOutside2 = (e:Event)=>{
+const handleClickOutside2 = (e: Event) => {
   if (!SetInput.value || !SetInput.value.contains(e.target as Node)) {
-   SetTitleBol.value = false
+    SetTitleBol.value = false
     document.removeEventListener('click', handleClickOutside2)
   }
 }
 
 // 改会话标题
 const getName = () => {
-
-
   // 关闭弹出框
   NavStore.id = ''
   // 显示修改标题框
@@ -147,7 +141,6 @@ watch(
 </script>
 
 <style scoped lang="scss">
-
 // 会话列表
 .Box {
   position: relative;

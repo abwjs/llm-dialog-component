@@ -22,14 +22,17 @@
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue'
-import { Content } from '../types/conversation'
+import { storeToRefs } from 'pinia';
 import CopyButton from './CopyButton.vue'
+import useConversationStore from '../store/modules/conversation';
 
-const props = defineProps<{
-  ContentList: Content[]
-}>()
-const { ContentList } = toRefs(props)
+const ConversationStore = useConversationStore()
+
+const { ContentList} = storeToRefs(ConversationStore)
+
+
+
+
 
 </script>
 

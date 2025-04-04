@@ -21,14 +21,14 @@
           <p>有什么可以帮你的？</p>
         </div>
         <!-- 对话框组件 -->
-        <DialogBox @sending="sending"></DialogBox>
+        <DialogBox></DialogBox>
       </div>
       <!-- 有消息时显示的组件 -->
       <div class="Form2 Form" v-else>
         <!-- 消息列表组件 -->
-        <ChatContent  :ContentList="ContentList"></ChatContent>
+        <ChatContent :ContentList="ContentList"></ChatContent>
         <!-- 对话框组件 -->
-        <DialogBox @sending="sending"></DialogBox>
+        <DialogBox></DialogBox>
       </div>
     </main>
   </div>
@@ -43,112 +43,21 @@ import DialogBox from '../components/DialogBox.vue'
 import ChatContent from '../components/ChatContent.vue'
 import useNavStore from '../store/modules/nav'
 import useConversationStore from '../store/modules/conversation'
-import { Talk } from '../api/chat'
-import {  onMounted, ref } from 'vue'
+import { onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { additional } from '../types/Chatmessages'
 const ConversationStore = useConversationStore()
-
 const NavStore = useNavStore()
-const {ContentList,ConversationsId,ConversationTitle} = storeToRefs(ConversationStore)
+const { ContentList, ConversationTitle } = storeToRefs(ConversationStore)
 // 修改导航栏隐藏显示
 const Scale = () => {
   NavStore.$patch((store) => {
     store.navbol = !store.navbol
   })
 }
-onMounted(()=>{
-  ConversationStore.GetContent()}
-)
-// 接收内容
-const fullContent = ref<string>('')
+onMounted(() => {
+  ConversationStore.GetContent()
+})
 
-//buffer
-const buffer = ref<string>('')
-//对话id
-const chat_id = ref<string>('')
-// 处理流式输出提取内容函数（使用buffer处理不完整行）
-
-const processChunk = (chunk: string) => {
-
-  buffer.value += chunk
-  const lines = buffer.value.split('\n')
-  // 保留未处理完的部分
-  buffer.value = lines.pop() || ''
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
-    if (line.startsWith('event:conversation.chat.created')) {
-      //找data的那一行
-      const dataLine = lines[i + 1].trim()
-      //去data
-      const dataStr = dataLine.slice(5).trim()
-      try {
-        const data = JSON.parse(dataStr)
-        chat_id.value = data.id
-      } catch (error) {
-        console.error('拿取chatid失败', error)
-      }
-    }
-    if (line.startsWith('event:conversation.message.delta') && i + 1 < lines.length) {
-      const dataLine = lines[i + 1].trim()
-      if (dataLine.startsWith('data:')) {
-        const dataStr = dataLine.slice(5).trim()
-        try {
-          const data = JSON.parse(dataStr)
-
-          if (data.type === 'answer') {
-            fullContent.value += data.content
-            ConversationStore.setAIStream(data.content)
-          }
-        } catch (error) {
-          console.error('解析 JSON 失败:', error)
-        }
-        i++ // 跳过已处理的 data 行
-      }
-    }
-  }
-}
-
-//对话框发送对话
-const sending = async (value: string) => {
-  fullContent.value = ''
-  // 判断当前为点击创建对话的页面
-  if (ConversationsId.value === '') {
-    //创建会话
-    await ConversationStore.addConversation()
-  }
-
-  //发起对话消息
-  const additional_messages: additional[] = [
-    {
-      role: 'user',
-      content: value,
-      content_type: 'text',
-    },
-  ]
-  const HTTP = Talk(additional_messages)
-  HTTP.then(async (res) => {
-    // 创建一个可读流
-    const reader = res.body.getReader()
-    const decoder = new TextDecoder('utf-8')
-    //增加用户消息
-    ConversationStore.setUserMessage(value)
-    // 增加ai消息占位
-    ConversationStore.setAIMessage()
-
-    while (true) {
-      const { done, value } = await reader.read()
-      if (done) {
-        console.log('结束读取')
-        break
-      }
-      processChunk(decoder.decode(value, { stream: true }))
-      // 处理累积的消息内容
-    }
-  }).catch((err) => {
-    console.log(err)
-  })
-}
 </script>
 
 <style scoped lang="scss">

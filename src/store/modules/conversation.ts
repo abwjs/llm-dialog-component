@@ -18,7 +18,8 @@ const useConversationStore = defineStore('conversation', {
   getters: {
     //当前会话标题
     ConversationTitle(state) {
-      return state.Conversation_list.find((item) => item.Conversation_id == this.ConversationsId)?.Conversation_title
+      return state.Conversation_list.find((item) => item.Conversation_id == this.ConversationsId)
+        ?.Conversation_title
     },
   },
   actions: {
@@ -40,7 +41,7 @@ const useConversationStore = defineStore('conversation', {
     },
     // 流式增加ai消息
     setAIStream(chunk: string) {
-      const content = this.ContentList[this.ContentList.length-1] as Content
+      const content = this.ContentList[this.ContentList.length - 1] as Content
       content.content += chunk
     },
     //进行一次对话
@@ -59,30 +60,33 @@ const useConversationStore = defineStore('conversation', {
     //获取当前的会话的信息列表
     async GetContent() {
 
-      if(!this.ConversationsId) {
+      if (!this.ConversationsId) {
         this.ContentList = []
         return
       }
       //调用获取消息列表api
       try {
-      const {data} =   await ViewMessageList(this.ConversationsId)
-      data.reverse()
+        const { data } = await ViewMessageList(this.ConversationsId)
+        data.reverse()
+        console.log(data);
 
-      this.ContentList = data.map(({id,role,content}:Content)=>{
-        return {
-          id,
-          content,
-          role
-        }
-      })}catch(err){
-        console.log(err);
+        this.ContentList = data.map(({ id, role, content }: Content) => {
+          return {
+            id,
+            content,
+            role,
+          }
+        })
+      } catch (err) {
+        console.log(err)
       }
     },
 
-
     //修改会话标题
     setConversationTitle(Conversation_title: string, Conversation_id: string) {
-      const conversation = this.Conversation_list.find(item=>item.Conversation_id == Conversation_id) as conversation
+      const conversation = this.Conversation_list.find(
+        (item) => item.Conversation_id == Conversation_id,
+      ) as conversation
       conversation.Conversation_title = Conversation_title
     },
 
@@ -103,6 +107,8 @@ const useConversationStore = defineStore('conversation', {
     removeConversation(id: string) {
       //清空当前会话id
       this.ConversationsId = ''
+      // 更新消息列表
+      this.GetContent()
       this.Conversation_list = this.Conversation_list.filter((item) => {
         return item.Conversation_id !== id
       })
