@@ -86,6 +86,7 @@ const show = () => {
 //点击该会话后处理操作
 const ActiveFn = () => {
   if (conversationStore.ConversationsId === id) return
+  conversationStore.isLoading = true
   // 改变当前会话id
   conversationStore.setConversationId(id)
   // 获取当前会话消息

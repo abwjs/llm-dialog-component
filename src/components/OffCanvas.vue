@@ -43,7 +43,7 @@ const CreateMessage = () => {
   // 收回侧边栏
   NavStore.navbol = false
   // 清空会话id
-  conversationStore.ConversationsId = ''
+  conversationStore.ConversationsId = null
   conversationStore.GetContent()
 }
 </script>

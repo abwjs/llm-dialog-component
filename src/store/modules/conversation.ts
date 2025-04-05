@@ -5,10 +5,11 @@ import type { Content, conversation } from '@/types/conversation'
 const useConversationStore = defineStore('conversation', {
   state: () => {
     return {
+      isLoading:false,
       // 对话框组件显示与隐藏
       dialog: false,
       // 当前会话id
-      ConversationsId: '',
+      ConversationsId: null as string | null,
       //会话列表
       Conversation_list: [] as conversation[],
       //当前会话消息列表
@@ -78,6 +79,8 @@ const useConversationStore = defineStore('conversation', {
         })
       } catch (err) {
         console.log(err)
+      }finally {
+        this.isLoading = false
       }
     },
 
@@ -105,7 +108,7 @@ const useConversationStore = defineStore('conversation', {
     //删除会话
     removeConversation(id: string) {
       //清空当前会话id
-      this.ConversationsId = ''
+      this.ConversationsId = null
       // 更新消息列表
       this.GetContent()
       this.Conversation_list = this.Conversation_list.filter((item) => {

@@ -2,9 +2,9 @@
   <div class="DialogBox">
     <div class="Dialog">
       <!-- 文件预览 -->
-      <div class="Preview" :class="{ PreviewAction: fileInfoList.length !== 0 }">
+      <div class="Preview"  :class="{ PreviewAction: fileInfoList.length !== 0 }">
         <!-- 文件组件 -->
-        <div class="file" v-for="info in fileInfoList" :key="info.id">
+        <div class="file"  v-for="info in fileInfoList" :key="info.id">
           <div class="btn-remove" @click="removeFile(info.id)">
             <el-icon :size="15">
               <CloseBold />
@@ -53,7 +53,6 @@ const ConversationStore = useConversationStore()
 const { ConversationsId } = storeToRefs(ConversationStore)
 
 const text = ref<string>('')
-// 模拟数据
 
 const fileInfoList = ref([])
 
@@ -138,7 +137,7 @@ const sending = async () => {
   }
   fullContent.value = ''
   // 判断当前为点击创建对话的页面
-  if (ConversationsId.value === '') {
+  if (!ConversationsId.value) {
     //创建会话
     await ConversationStore.addConversation()
   }
