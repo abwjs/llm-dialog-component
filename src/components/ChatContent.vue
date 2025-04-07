@@ -12,6 +12,7 @@
         <img src="../assets/img/logo.pngd" alt="" />
         <span>{{ item.value }}</span>
         <CopyButton :text="item.value"></CopyButton>
+        <MdRenderer :source="item.value"></MdRenderer>
       </div>
       <!-- 用户回答 -->
       <div class="right chat" v-else>
@@ -25,6 +26,7 @@
 import { toRefs } from 'vue'
 import { Content } from '../types/conversation'
 import CopyButton from './CopyButton.vue'
+import MdRenderer from './MdRenderer.vue';
 
 const props = defineProps<{
   ContentList: Content[]
