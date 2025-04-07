@@ -13,10 +13,11 @@
     }
   ],
   "compilerOptions": {
-    // ...
+    "composite": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true
+ ,"module": "ESNext" 
   },
 }
 

@@ -6,8 +6,7 @@ export interface conversation {
   Conversation_id: string
   // 会话标题
   Conversation_title: string
-  // 会话内容列表
-  content: Content[]
+
   // 时间
   createdAt: Date
 }
@@ -15,6 +14,6 @@ export interface conversation {
 export interface Content {
   id: string
   role: 'assistant' | 'user'
-  value: string
+  content: string
   fileInfo?: FileObject
 }

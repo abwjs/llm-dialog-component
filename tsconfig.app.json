@@ -1,7 +1,5 @@
 {
-  "extends": "@vue/tsconfig/tsconfig.dom.json",
-  "include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
-  "exclude": ["src/**/__tests__/*"],
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "composite": true, // 允许项目引用
     "noEmit": false,   // 必须允许生成文件（复合项目要求）

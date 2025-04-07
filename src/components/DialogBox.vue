@@ -2,10 +2,10 @@
   <div class="DialogBox">
     <div class="Dialog">
       <!-- 文件预览 -->
-      <div class="Preview" :class="{ PreviewAction: FileArr.length !== 0 }">
+      <div class="Preview"  :class="{ PreviewAction: fileInfoList.length !== 0 }">
         <!-- 文件组件 -->
-        <div class="file" v-for="item in FileArr" :key="item.id">
-          <div class="btn-remove" @click="removeFile(item.id)">
+        <div class="file"  v-for="info in fileInfoList" :key="info.id">
+          <div class="btn-remove" @click="removeFile(info.id)">
             <el-icon :size="15">
               <CloseBold />
             </el-icon>
@@ -14,25 +14,25 @@
           <img src="../assets/img/logo.png" alt="" />
           <div class="content">
             <!-- 文件名字 -->
-            <h2>{{ item.title }}</h2>
+            <h2>{{ info.name }}</h2>
             <!-- 文件格式大小 -->
-            <p>{{ item.fileobj }} {{ item.D }}</p>
+            <p>{{ formatFileSize(info.size) }}</p>
           </div>
         </div>
       </div>
       <div class="Textarea">
         <!-- 文本输入 -->
-        <el-input v-model="text" style="width: 100%" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"
-          resize="none" placeholder="输入消息，Enter 发送，Shift + Enter 换行" />
+        <el-input
+          v-model="text"
+          style="width: 100%"
+          :autosize="{ minRows: 3, maxRows: 10 }"
+          type="textarea"
+          resize="none"
+          placeholder="输入消息，Enter 发送，Shift + Enter 换行"
+        />
         <div class="postBox">
           <!-- 文件上传 -->
-          <div class="Link">
-            <el-icon :size="20"><Paperclip /></el-icon>
-          </div>
-          <!-- 图片上传 -->
-          <div class="i">
-            <el-icon :size="20"><Paperclip /></el-icon>
-          </div>
+          <FileUpload class="fileload" @update-file-info="handleFileInfo" />
           <!-- 发送消息 -->
           <button class="post" @click="sending"></button>
         </div>
@@ -43,32 +43,134 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-const emits = defineEmits(['sending'])
-const text = ref<string>('')
-// 模拟数据
-const FileArr = ref([
-  {
-    id: '1',
-    title: '我不是文件我不是文件我不是文件我不是文件',
-    fileobj: 'HTML',
-    // 文件大小
-    D: '100MB',
-  },
-])
-const sending = () => {
-  if (text.value === '') {
-    // 模拟提示框
-    console.log();
+import { additional } from '../types/Chatmessages'
+import { Talk } from '../api/chat'
+import { storeToRefs } from 'pinia'
+import useConversationStore from '../store/modules/conversation'
 
+const ConversationStore = useConversationStore()
+
+const { ConversationsId } = storeToRefs(ConversationStore)
+
+const text = ref<string>('')
+
+const fileInfoList = ref([])
+
+const handleFileInfo = (fileInfo) => {
+  fileInfo.id = Date.now().toString() // 为每个文件生成一个唯一的 ID
+  fileInfoList.value.push(fileInfo)
+}
+
+const removeFile = (id) => {
+  console.log(`删除文件，ID: ${id}`)
+  fileInfoList.value = fileInfoList.value.filter((item) => {
+    console.log(`过滤文件，ID: ${item.id}`)
+    return item.id !== id
+  })
+}
+
+// 格式化文件大小
+const formatFileSize = (size: number) => {
+  if (size < 1024) {
+    return `${size} B`
+  } else if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(2)} KB`
+  } else if (size < 1024 * 1024 * 1024) {
+    return `${(size / 1024 / 1024).toFixed(2)} MB`
   } else {
-    // 传给对话内容组件处理
-    emits('sending', text.value)
-    text.value = ''
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
   }
 }
-const removeFile = (id) => {
-  FileArr.value = FileArr.value.filter((item) => {
-    return item.id !== id
+
+// 接收内容
+const fullContent = ref<string>('')
+
+//buffer
+const buffer = ref<string>('')
+//对话id
+const chat_id = ref<string>('')
+// 处理流式输出提取内容函数（使用buffer处理不完整行）
+
+const processChunk = (chunk: string) => {
+  buffer.value += chunk
+  const lines = buffer.value.split('\n')
+  // 保留未处理完的部分
+  buffer.value = lines.pop() || ''
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim()
+    if (line.startsWith('event:conversation.chat.created')) {
+      //找data的那一行
+      const dataLine = lines[i + 1].trim()
+      //去data
+      const dataStr = dataLine.slice(5).trim()
+      try {
+        const data = JSON.parse(dataStr)
+        chat_id.value = data.id
+      } catch (error) {
+        console.error('拿取chatid失败', error)
+      }
+    }
+    if (line.startsWith('event:conversation.message.delta') && i + 1 < lines.length) {
+      const dataLine = lines[i + 1].trim()
+      if (dataLine.startsWith('data:')) {
+        const dataStr = dataLine.slice(5).trim()
+        try {
+          const data = JSON.parse(dataStr)
+
+          if (data.type === 'answer') {
+            fullContent.value += data.content
+            ConversationStore.setAIStream(data.content)
+          }
+        } catch (error) {
+          console.error('解析 JSON 失败:', error)
+        }
+        i++ // 跳过已处理的 data 行
+      }
+    }
+  }
+}
+
+//对话框发送对话
+const sending = async () => {
+  if (text.value == '') {
+    console.log('模拟无消息提示框')
+  }
+  fullContent.value = ''
+  // 判断当前为点击创建对话的页面
+  if (!ConversationsId.value) {
+    //创建会话
+    await ConversationStore.addConversation()
+  }
+
+  //发起对话消息
+  const additional_messages: additional[] = [
+    {
+      role: 'user',
+      content: text.value,
+      content_type: 'text',
+    },
+  ]
+  const HTTP = Talk(additional_messages)
+  HTTP.then(async (res) => {
+    // 创建一个可读流
+    const reader = res.body.getReader()
+    const decoder = new TextDecoder('utf-8')
+    //增加用户消息
+    ConversationStore.setUserMessage(text.value)
+    // 增加ai消息占位
+    ConversationStore.setAIMessage()
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) {
+        console.log('结束读取')
+        break
+      }
+      processChunk(decoder.decode(value, { stream: true }))
+      // 处理累积的消息内容
+    }
+  }).catch((err) => {
+    console.log(err)
   })
 }
 </script>
@@ -193,7 +295,7 @@ const removeFile = (id) => {
       width: 100%;
       padding: 6px;
 
-      //输入框自定义样式s
+      //输入框自定义样式
       :deep(.el-textarea__inner) {
         border: none;
         background-color: rgb(243, 244, 246);
@@ -211,7 +313,8 @@ const removeFile = (id) => {
         width: 100%;
         justify-content: flex-end;
         gap: 15px;
-        .Link,.i {
+
+        .fileload {
           width: 28px;
           height: 28px;
           border-radius: 10px;
@@ -220,10 +323,12 @@ const removeFile = (id) => {
           align-items: center;
           cursor: pointer;
           transition: all 0.1s;
+
           &:hover {
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0, 0, 0, 0.5);
           }
         }
+
         .post {
           right: 10px;
           bottom: 30px;
