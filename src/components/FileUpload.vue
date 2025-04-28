@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElMessage} from 'element-plus';
 import type { UploadProps, UploadUserFile, UploadFile } from 'element-plus';
 import { defineEmits } from 'vue';
 import { uploadFile } from '../api/file';

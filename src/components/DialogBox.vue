@@ -2,7 +2,7 @@
   <div class="DialogBox">
     <div class="Dialog">
       <!-- 文件预览 -->
-      <div class="Preview" :class="{ PreviewAction: fileInfoList.length !== 0 }">
+      <div class="Preview"  :class="{ PreviewAction: fileInfoList.length !== 0 }">
         <!-- 文件组件 -->
         <div class="file" v-for="info in fileInfoList" :key="info.id" @click="showPreviewDialog(info)">
           <div class="btn-remove" @click.stop="removeFile(info.id)">
@@ -26,8 +26,14 @@
       </div>
       <div class="Textarea">
         <!-- 文本输入 -->
-        <el-input v-model="text" style="width: 100%" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"
-          resize="none" placeholder="输入消息，Enter 发送，Shift + Enter 换行" />
+        <el-input
+          v-model="text"
+          style="width: 100%"
+          :autosize="{ minRows: 3, maxRows: 10 }"
+          type="textarea"
+          resize="none"
+          placeholder="输入消息，Enter 发送，Shift + Enter 换行"
+        />
         <div class="postBox">
           <!-- 文件上传 -->
           <FileUpload class="fileload" @update-file-info="handleFileInfo" />

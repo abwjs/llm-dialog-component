@@ -36,4 +36,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     VT: typeof import('./src/components/VT.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }

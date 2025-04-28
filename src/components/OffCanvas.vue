@@ -27,7 +27,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import ConversationList from '@/components/ConversationList.vue'
 import useNavStore from '../store/modules/nav'
@@ -35,7 +34,6 @@ import useConversationStore from '../store/modules/conversation'
 const conversationStore = useConversationStore()
 const { Conversation_list } = storeToRefs(conversationStore)
 const NavStore = useNavStore()
-const nav = ref()
 const Scale = () => {
   NavStore.navbol = !NavStore.navbol
 }
@@ -45,7 +43,8 @@ const CreateMessage = () => {
   // 收回侧边栏
   NavStore.navbol = false
   // 清空会话id
-  conversationStore.ConversationsId = ''
+  conversationStore.ConversationsId = null
+  conversationStore.GetContent()
 }
 </script>
 

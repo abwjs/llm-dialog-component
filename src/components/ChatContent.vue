@@ -1,35 +1,34 @@
 <!-- 消息列表组件 -->
 <template>
-  <div class="chatBox">
+  <div class="chatBox" v-loading="isLoading">
     <div
       class="Message"
       :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user' }"
       v-for="item in ContentList"
       :key="item.id"
     >
+    <img src="../assets/img/logo.png" alt="" v-if="item.role==='assistant'"/>
       <!-- ai回答 -->
-      <div class="left chat" v-if="item.role === 'assistant'">
-        <img src="../assets/img/logo.pngd" alt="" />
-        <span>{{ item.value }}</span>
-        <CopyButton :text="item.value"></CopyButton>
+      <div v-loading="!item.content" class="left chat" v-if="item.role === 'assistant'">
+        <span>{{ item.content }}</span>
+        <CopyButton :text="item.content"></CopyButton>
       </div>
       <!-- 用户回答 -->
       <div class="right chat" v-else>
-        <span>{{ item.value }}</span>
+        <span>{{ item.content }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { toRefs } from 'vue'
-import { Content } from '../types/conversation'
+import { storeToRefs } from 'pinia'
 import CopyButton from './CopyButton.vue'
+import useConversationStore from '../store/modules/conversation'
 
-const props = defineProps<{
-  ContentList: Content[]
-}>()
-const { ContentList } = toRefs(props)
+const ConversationStore = useConversationStore()
+
+const { ContentList,isLoading } = storeToRefs(ConversationStore)
 </script>
 
 <style scoped lang="scss">
@@ -91,6 +90,13 @@ const { ContentList } = toRefs(props)
 
   .AILeft {
     justify-content: flex-start;
+    img {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      margin-right: 10px;
+      border: 1px solid rgba(219, 234, 254);
+    }
   }
 
   .UserRight {

@@ -1,32 +1,15 @@
 import http from './http'
-import config from '@/assets/config'
-import useConversationStore from '@/store/modules/conversation'
-interface messageList {
-  bot_id: string
-  page_num?: number
-  page_size?: number
-  sort_order?: 'ASC' | 'DESC'
-}
-const { bot_id } = config
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const params = <messageList>{
-  bot_id,
-}
 
 //查看当前会话的消息列表
-export const ViewMessageList = () => {
-  const ConversationStore = useConversationStore()
+export const ViewMessageList = async (conversation_id: string) => {
   const obj = {
     method: 'post',
     path: 'v1/conversation/message/list',
     params: {
-      conversation_id: ConversationStore.ConversationsId,
+      conversation_id,
     },
   }
-  http(obj).then((res) => {
-    console.log(res)
-  })
+  return http(obj)
 }
 
 //创建会话
