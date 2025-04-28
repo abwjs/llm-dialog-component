@@ -3,8 +3,8 @@ import FormData from 'form-data';
 import config from '../assets/config';
 
 const { apiKey } = config;
-const uploadUrl = 'https://api.coze.cn/v1/files/upload'; // 替换为你的上传接口地址
-const retrieveUrl = 'https://api.coze.cn/v1/files/retrieve'; // 替换为你的文件详情接口地址
+const uploadUrl = 'https://api.coze.cn/v1/files/upload'; // 上传接口地址
+const retrieveUrl = 'https://api.coze.cn/v1/files/retrieve'; // 文件详情接口地址
 
 // 上传文件
 export async function uploadFile(file: File): Promise<any> {
@@ -18,7 +18,7 @@ export async function uploadFile(file: File): Promise<any> {
   try {
     const response = await axios.post(uploadUrl, formData, {
       headers,
-      timeout: 10000, // 设置超时时间为10秒
+      timeout: 60000, // 设置超时时间为60秒
     });
     return response.data;
   } catch (error) {

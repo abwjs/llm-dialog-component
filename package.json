@@ -18,6 +18,10 @@
   "dependencies": {
     "@coze/api": "^1.1.0",
     "@element-plus/icons-vue": "^2.3.1",
+    "@vue-office/docx": "1.6.2",
+    "@vue-office/excel": "^1.7.14",
+    "@vue-office/pdf": "^2.0.10",
+    "@vue-office/pptx": "0.0.2",
     "axios": "^1.8.4",
     "element-plus": "^2.9.6",
     "form-data": "^4.0.2",
@@ -28,6 +32,7 @@
     "sass": "^1.85.1",
     "vite-plugin-vue-setup-extend": "^0.4.0",
     "vue": "^3.5.13",
+    "vue-demi": "^0.14.10",
     "vue-router": "^4.5.0"
   },
   "devDependencies": {

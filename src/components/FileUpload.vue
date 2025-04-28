@@ -1,13 +1,11 @@
 <template>
   <el-upload v-model:file-list="fileList" class="upload-demo" multiple :on-preview="handlePreview"
-    :on-remove="handleRemove" :before-remove="beforeRemove"  :on-exceed="handleExceed" :auto-upload="false"
+    :on-remove="handleRemove" :before-remove="beforeRemove" :on-exceed="handleExceed" :auto-upload="false"
     :on-change="handleChange" :show-file-list="false">
     <!-- 自定义上传按钮，使用图片 -->
     <div class="upload-button">
       <img src="../assets/img/filelink.png" alt="上传" class="upload-image" @click="submitUpload" />
-      <div class="upload-tip">
-        上传最大文件不超过512 MB
-      </div>
+      <div class="upload-tip">上传最大文件不超过512 MB</div>
     </div>
     <template #tip>
       <div class="el-upload__tip">
@@ -21,27 +19,15 @@
 import { ref } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import type { UploadProps, UploadUserFile, UploadFile } from 'element-plus';
+import { defineEmits } from 'vue';
 import { uploadFile } from '../api/file';
-const emit = defineEmits(['update-file-info']); // 定义自定义事件
 
+const emit = defineEmits(['update-file-info']);
 const fileList = ref<UploadUserFile[]>([]);
 
-const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
-  console.log(file, uploadFiles);
-};
-
-const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  console.log(uploadFile);
-};
-
-const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
-  return ElMessageBox.confirm(
-    `确定要取消上传文件 "${uploadFile.name}" 吗？`
-  ).then(
-    () => true,
-    () => false
-  );
-};
+// 并发上传控制
+const maxConcurrentUploads = 3;
+let ongoingUploads = 0;
 
 const handleChange: UploadProps['onChange'] = async (file: UploadFile) => {
   if (!file.raw) {
@@ -50,36 +36,61 @@ const handleChange: UploadProps['onChange'] = async (file: UploadFile) => {
   }
 
   try {
-    const response = await uploadFile(file.raw as File); // 调用自定义的上传函数
-    if (response) {
-      ElMessage.success(`文件 "${file.name}" 上传成功。`);
-      console.log(response);
-      // 更新文件列表，添加上传后的文件 URL
-      file.url = response.url; // 假设返回的响应中包含文件的 URL
-      file.status = 'success';
+    const fileUrl = URL.createObjectURL(file.raw);
 
-      // 发射文件信息到父组件
-      const fileInfo = {
-        name: file.name,
-        size: file.size, // 文件大小（单位：字节）
-        url: response.url, // 文件上传后的 URL
-      };
-      emit('update-file-info', fileInfo);
+    const fileInfo = {
+      name: file.name,
+      size: file.size,
+      url: fileUrl,
+      uploading: true
+    };
+
+    emit('update-file-info', fileInfo);
+
+    file.status = 'uploading';
+
+    // 调用实际的上传 API
+    const response = await uploadFile(file.raw);
+
+    if (response.code === 0) {
+      fileInfo.uploading = false;
+      file.status = 'success';
+      ElMessage.success(`文件 "${file.name}" 上传成功。`);
+
+      // 根据需要更新文件信息
+      Object.assign(fileInfo, {
+        id: response.data.id,
+        bytes: response.data.bytes,
+        created_at: response.data.created_at,
+        file_name: response.data.file_name
+      });
+    } else {
+      fileInfo.uploading = false;
+      file.status = 'fail';
+      ElMessage.error(`文件 "${file.name}" 上传失败：${response.msg || '未知错误'}`);
     }
-  } catch (error) {
-    ElMessage.error(`文件 "${file.name}" 上传失败。`);
+  } catch (error: any) {
+    ElMessage.error(
+      `文件 "${file.name}" 上传失败：${error.response?.data?.message || error.message}`
+    );
     console.error(error);
     file.status = 'fail';
+  } finally {
+    ongoingUploads--;
   }
 };
-// const submitUpload = () => {
-//   // 触发文件上传
-//   fileList.value.forEach((file) => {
-//     if (file.status === 'ready') {
-//       handleChange(file);
-//     }
-//   });
-// };
+
+const submitUpload = () => {
+  const filesToUpload = fileList.value.filter(file => file.status === 'ready');
+
+  filesToUpload.forEach((file) => {
+    if (ongoingUploads < maxConcurrentUploads) {
+      handleChange(file as any);
+      file.status = 'uploading';
+      ongoingUploads++;
+    }
+  });
+};
 </script>
 
 <style scoped>
@@ -92,16 +103,13 @@ const handleChange: UploadProps['onChange'] = async (file: UploadFile) => {
 .upload-image {
   width: 20px;
   height: auto;
-  /* 根据需要调整图片大小 */
 }
 
 .upload-tip {
   position: absolute;
   bottom: 30px;
-  /* 调整提示信息的位置 */
   left: -90px;
   width: 150px;
-  /* height: 20px; */
   line-height: 20px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.9);
@@ -111,14 +119,14 @@ const handleChange: UploadProps['onChange'] = async (file: UploadFile) => {
   font-size: 12px;
   color: #333;
   visibility: hidden;
-  transition: visibility 0.3s, opacity 0.3s;
+  transition:
+    visibility 0.3s,
+    opacity 0.3s;
   opacity: 0;
 }
 
 .upload-button:hover .upload-tip {
   visibility: visible;
-  /* 鼠标经过时显示 */
   opacity: 1;
-  /* 鼠标经过时变为不透明 */
 }
 </style>

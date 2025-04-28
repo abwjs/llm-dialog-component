@@ -28,6 +28,7 @@ declare module 'vue' {
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElUpload: typeof import('element-plus/es')['ElUpload']
+    FilePreview: typeof import('./src/components/FilePreview.vue')['default']
     FileUpload: typeof import('./src/components/FileUpload.vue')['default']
     Offcanvas: typeof import('./src/components/Offcanvas.vue')['default']
     OffCanvas: typeof import('./src/components/OffCanvas.vue')['default']
