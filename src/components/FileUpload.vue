@@ -17,12 +17,12 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue';
-import { ElMessage} from 'element-plus';
+import { ElMessage } from 'element-plus';
 import type { UploadProps, UploadUserFile, UploadFile } from 'element-plus';
 import { defineEmits } from 'vue';
 import { uploadFile } from '../api/file';
 
-const emit = defineEmits(['update-file-info']);
+const emit = defineEmits(['update-file-info', 'update-upload-status']);
 const fileList = ref<UploadUserFile[]>([]);
 
 // 并发上传控制
@@ -42,18 +42,25 @@ const handleChange: UploadProps['onChange'] = async (file: UploadFile) => {
       name: file.name,
       size: file.size,
       url: fileUrl,
+      id: Date.now().toString(),  // 添加文件唯一标识符
       uploading: true
     };
 
     emit('update-file-info', fileInfo);
-
+    emit('update-upload-status', {
+      uploading: true,
+      fileId: fileInfo.id  // 传递文件唯一标识符
+    });
     file.status = 'uploading';
 
     // 调用实际的上传 API
     const response = await uploadFile(file.raw);
 
     if (response.code === 0) {
-      fileInfo.uploading = false;
+      emit('update-upload-status', {
+        uploading: false,
+        fileId: fileInfo.id  // 传递文件唯一标识符
+      });
       file.status = 'success';
       ElMessage.success(`文件 "${file.name}" 上传成功。`);
 
@@ -65,7 +72,10 @@ const handleChange: UploadProps['onChange'] = async (file: UploadFile) => {
         file_name: response.data.file_name
       });
     } else {
-      fileInfo.uploading = false;
+      emit('update-upload-status', {
+        uploading: false,
+        fileId: fileInfo.id  // 传递文件唯一标识符
+      });
       file.status = 'fail';
       ElMessage.error(`文件 "${file.name}" 上传失败：${response.msg || '未知错误'}`);
     }

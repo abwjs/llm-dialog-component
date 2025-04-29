@@ -2,7 +2,7 @@
   <div class="DialogBox">
     <div class="Dialog">
       <!-- 文件预览 -->
-      <div class="Preview"  :class="{ PreviewAction: fileInfoList.length !== 0 }">
+      <div class="Preview" :class="{ PreviewAction: fileInfoList.length !== 0 }">
         <!-- 文件组件 -->
         <div class="file" v-for="info in fileInfoList" :key="info.id" @click="showPreviewDialog(info)">
           <div class="btn-remove" @click.stop="removeFile(info.id)">
@@ -19,24 +19,19 @@
             <p>{{ formatFileSize(info.size) }}</p>
           </div>
           <!-- 文件上传状态 -->
-          <div v-if="info.uploading" class="uploading-indicator">
+          <div v-if="uploadingStatus[info.id]" class="uploading-indicator">
             <span class="spinner"></span>
           </div>
         </div>
       </div>
       <div class="Textarea">
         <!-- 文本输入 -->
-        <el-input
-          v-model="text"
-          style="width: 100%"
-          :autosize="{ minRows: 3, maxRows: 10 }"
-          type="textarea"
-          resize="none"
-          placeholder="输入消息，Enter 发送，Shift + Enter 换行"
-        />
+        <el-input v-model="text" style="width: 100%" :autosize="{ minRows: 3, maxRows: 10 }" type="textarea"
+          resize="none" placeholder="输入消息，Enter 发送，Shift + Enter 换行" />
         <div class="postBox">
           <!-- 文件上传 -->
-          <FileUpload class="fileload" @update-file-info="handleFileInfo" />
+          <FileUpload class="fileload" @update-file-info="handleFileInfo"
+            @update-upload-status="handleUpdateUploadStatus" />
           <!-- 发送消息 -->
           <button class="post" @click="sending"></button>
         </div>
@@ -91,6 +86,9 @@ import VueOfficePptx from '@vue-office/pptx/lib/v3/vue-office-pptx.mjs';
 // 文件信息列表
 const fileInfoList = ref([])
 
+// 文件上传状态（独立管理每个文件的上传状态）
+const uploadingStatus = ref<{ [id: string]: boolean }>({})
+
 // 弹框预览相关
 const previewDialogVisible = ref(false)
 const currentPreviewFile = ref(null)
@@ -144,6 +142,12 @@ const handleFileInfo = (fileInfo: any) => {
   fileInfoList.value.push(fileInfo);
 };
 
+// 处理文件上传状态更新
+const handleUpdateUploadStatus = (statusInfo) => {
+  uploadingStatus.value[statusInfo.fileId] = statusInfo.uploading;
+  console.log('文件状态：', statusInfo.uploading);
+};
+
 // 监听文件信息列表的变化
 watch(fileInfoList, (newVal) => {
   console.log('文件信息列表更新：', newVal)
@@ -158,34 +162,34 @@ const showPreviewDialog = (file) => {
 // 格式化文件大小
 const formatFileSize = (size: number) => {
   if (size < 1024) {
-    return `${size} B`
+    return `${size} B`;
   } else if (size < 1024 * 1024) {
-    return `${(size / 1024).toFixed(2)} KB`
+    return `${(size / 1024).toFixed(2)} KB`;
   } else if (size < 1024 * 1024 * 1024) {
-    return `${(size / 1024 / 1024).toFixed(2)} MB`
+    return `${(size / 1024 / 1024).toFixed(2)} MB`;
   } else {
-    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
   }
 };
 
 // 删除文件
 const removeFile = (id: string) => {
-  console.log(`删除文件，ID: ${id}`)
+  console.log(`删除文件，ID: ${id}`);
   fileInfoList.value = fileInfoList.value.filter((item) => {
-    console.log(`过滤文件，ID: ${item.id}`)
-    return item.id !== id
-  })
+    console.log(`过滤文件，ID: ${item.id}`);
+    return item.id !== id;
+  });
 };
 
 // 发送消息
-const text = ref<string>('')
+const text = ref<string>('');
 const sending = () => {
   if (text.value.trim() === '') {
-    console.log('模拟无消息提示框')
-    return
+    console.log('模拟无消息提示框');
+    return;
   }
-  console.log('发送消息：', text.value)
-  text.value = ''
+  console.log('发送消息：', text.value);
+  text.value = '';
 };
 
 // 监听文件信息列表的变化
