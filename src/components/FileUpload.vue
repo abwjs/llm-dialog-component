@@ -52,8 +52,6 @@ const handleChange: UploadProps['onChange'] = async (file: UploadFile) => {
       fileId: fileInfo.id  // 传递文件唯一标识符
     });
     file.status = 'uploading';
-
-    // 调用实际的上传 API
     const response = await uploadFile(file.raw);
 
     if (response.code === 0) {
