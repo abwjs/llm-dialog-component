@@ -172,6 +172,7 @@ const sending = async () => {
     ConversationStore.setUserMessage(text.value)
     // 增加ai消息占位
     ConversationStore.setAIMessage()
+    text.value = ''
 
     while (true) {
       const { done, value } = await reader.read()
