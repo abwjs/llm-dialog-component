@@ -58,7 +58,7 @@
         </div>
         <!-- 音视频文件预览 -->
         <div v-else-if="isVideoFile(currentPreviewFile.type)">
-          <video :src="currentPreviewFile.url" controls style="max-width: 100%; max-height: 600px;"></video>
+          <video :src="currentPreviewFile.url" controls style="display: block; margin: 0 auto; max-width: 100%; max-height: 600px;" ></video>
         </div>
         <!-- PDF 文件预览 -->
         <div v-else-if="isPdfFile(currentPreviewFile.type)">
@@ -93,7 +93,6 @@ const { ConversationsId } = storeToRefs(ConversationStore)
 
 const text = ref<string>('')
 const fileInfoList = ref([])
-
 
 // 接收内容
 const fullContent = ref<string>('')
@@ -156,13 +155,35 @@ const sending = async () => {
   }
 
   //发起对话消息
-  const additional_messages: additional[] = [
-    {
+  // 构建附加消息
+  const additional_messages: additional[] = [];
+
+  // 如果用户输入了文本消息
+  if (text.value.trim() !== '') {
+    additional_messages.push({
       role: 'user',
       content: text.value,
       content_type: 'text',
-    },
-  ]
+    });
+  }
+
+  // 如果有文件信息
+  if (fileInfoList.value.length > 0) {
+    // 提取 id 和 content.type，构造成对象数组
+    const fileContentArray = fileInfoList.value.map(file => ({
+      file_id: file.id,
+      type: file.content.type
+    }));
+
+    // 序列化为 JSON 字符串
+    const jsonString = JSON.stringify(fileContentArray);
+    // 将 JSON 字符串作为 content 参数发送
+    additional_messages.push({
+      role: 'user',
+      content: jsonString, // 将 JSON 字符串作为 content 参数
+      content_type: 'object_string' // 文件类型
+    });
+  }
   const HTTP = Talk(additional_messages)
   HTTP.then(async (res) => {
     // 创建一个可读流
@@ -172,7 +193,6 @@ const sending = async () => {
     ConversationStore.setUserMessage(text.value)
     // 增加ai消息占位
     ConversationStore.setAIMessage()
-    text.value = ''
 
     while (true) {
       const { done, value } = await reader.read()
@@ -201,13 +221,13 @@ const pictureType = ['jpg', 'jpeg', 'png', 'gif', 'webp']
 const videoType = ['mp4', 'ogg', 'webm']
 const pdfType = ['pdf']
 const officeType = ['docx', 'xlsx', 'pptx']
-
+const audioType = ['mp3', 'wav', 'ogg']; // 新增音频文件类型
 const isTextFile = (fileType: string): boolean => txtType.some(item => item === fileType)
 const isImageFile = (fileType: string): boolean => pictureType.some(item => item === fileType)
 const isVideoFile = (fileType: string): boolean => videoType.some(item => item === fileType)
 const isPdfFile = (fileType: string): boolean => pdfType.some(item => item === fileType)
 const isOfficeFile = (fileType: string): boolean => officeType.some(item => item === fileType)
-
+const isAudioFile = (fileType: string): boolean => audioType.some(item => item === fileType)
 // 获取对应的 vue-office 组件
 const getVueOfficeComponent = (type: string) => {
   switch (type) {
@@ -235,10 +255,24 @@ const handleFileInfo = (fileInfo: any) => {
     fileInfo.type = 'unknown';
   }
 
-  fileInfo.content = '';
+  // 初始化 fileInfo.content 为一个对象
+  fileInfo.content = {
+    type: 'file', // 默认文件类型为 'file'
+  };
 
+  // 根据文件扩展名设置 content.type
   if (isTextFile(fileInfo.type)) {
-    fileInfo.content = `这是 ${fileInfo.name} 的内容，大小为 ${formatFileSize(fileInfo.size)}。`;
+    fileInfo.content.type = 'text';
+  } else if (isImageFile(fileInfo.type)) {
+    fileInfo.content.type = 'image';
+  } else if (isVideoFile(fileInfo.type)) {
+    fileInfo.content.type = 'video';
+  } else if (isPdfFile(fileInfo.type)) {
+    fileInfo.content.type = 'file'; // PDF 文件仍归为文件类型
+  } else if (isOfficeFile(fileInfo.type)) {
+    fileInfo.content.type = 'file'; // Office 文件仍归为文件类型
+  } else {
+    fileInfo.content.type = 'file'; // 其他文件类型默认为 'file'
   }
 
   fileInfoList.value.push(fileInfo);
@@ -248,6 +282,7 @@ const handleFileInfo = (fileInfo: any) => {
 const handleUpdateUploadStatus = (statusInfo) => {
   uploadingStatus.value[statusInfo.fileId] = statusInfo.uploading;
   console.log('文件状态：', statusInfo.uploading);
+  // 如果文件上传完成（uploading 为 false），将 fileId 添加到 uploadedFileIds 数组中
 };
 
 // 监听文件信息列表的变化
@@ -282,11 +317,6 @@ const removeFile = (id: string) => {
     return item.id !== id;
   });
 };
-
-// 监听文件信息列表的变化
-watch(fileInfoList, (newVal) => {
-  console.log('文件信息列表更新：', newVal)
-}, { deep: true })
 </script>
 
 <style scoped lang="scss">
