@@ -1,20 +1,27 @@
 <!-- 消息列表组件 -->
 <template >
   <div class="chatBox" v-loading="isLoading">
-     <div class="Message"
-         :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user' }"
-         v-for="item in visibleMessages"
-         :key="item.id"
-         v-memo="[item.id, item.content]">
+    <div class="Message" :class="{ AILeft: item.role === 'assistant', UserRight: item.role === 'user' }"
+      v-for="item in visibleMessages" :key="item.id" v-memo="[item.id, item.content]">
       <img src="../assets/img/logo.png" alt="" v-if="item.role === 'assistant'" />
       <!-- ai回答 -->
       <div v-loading="!item.content" class="left chat" v-if="item.role === 'assistant'">
         <!-- <CopyButton :text="item.content"></CopyButton> -->
         <MdRenderer :source="item.content"></MdRenderer>
       </div>
-      <!-- 用户回答 -->
       <div class="right chat" v-else>
-        <span>{{ item.content }}</span>
+        <span>
+          <div v-if="fileInfoList.length > 0">
+            <div class="file" v-for="info in fileInfoList" :key="info.id">
+              <img src="../assets/img/logo.png" alt="" />
+              <div class="content">
+                <h2>{{ info.name }}</h2>
+                <p>{{ formatFileSize(info.size) }}</p>
+              </div>
+            </div>
+          </div>
+          {{ item.content }}
+        </span>
       </div>
     </div>
     <div ref="observerSentinel" class="sentinel"></div>
@@ -27,6 +34,9 @@ import { storeToRefs } from 'pinia'
 // import CopyButton from './CopyButton.vue'
 import MdRenderer from './MdRenderer.vue'
 import useConversationStore from '../store/modules/conversation'
+import useFileStore from '../store/modules/fileStore';
+const fileStore = useFileStore();
+const { fileInfoList } = storeToRefs(fileStore);
 const scrollContainer = ref<HTMLElement>()
 const observerSentinel = ref<HTMLElement>()
 const loadingMore = ref(false)
@@ -72,6 +82,17 @@ const loadMoreHistory = () => {
     })
   })
 }
+const formatFileSize = (size: number) => {
+  if (size < 1024) {
+    return `${size} B`;
+  } else if (size < 1024 * 1024) {
+    return `${(size / 1024).toFixed(2)} KB`;
+  } else if (size < 1024 * 1024 * 1024) {
+    return `${(size / 1024 / 1024).toFixed(2)} MB`;
+  } else {
+    return `${(size / 1024 / 1024 / 1024).toFixed(2)} GB`;
+  }
+};
 
 // 初始化
 onMounted(() => {
@@ -184,6 +205,55 @@ const { ContentList, isLoading } = storeToRefs(ConversationStore)
 
   .chat {
     will-change: transform;
+  }
+}
+.file {
+  position: relative;
+  cursor: pointer;
+  border-radius: 15px;
+  height: 52px;
+  width: 200px;
+  background-color: rgb(243, 244, 246);
+  transition: all 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  padding: 5px 10px;
+  min-width: 0;
+
+  &:hover {
+    box-shadow: 0 5px 15px rgb(219, 220, 222);
+
+    .btn-remove {
+      display: flex;
+    }
+  }
+
+  img {
+    margin-right: 15px;
+    width: 30px;
+    height: 30px;
+  }
+
+  .content {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    h2 {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    p {
+      font-size: 12px;
+      opacity: 0.8;
+      color: rgb(71, 85, 105);
+    }
   }
 }
 </style>

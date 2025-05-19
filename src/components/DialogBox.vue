@@ -86,10 +86,12 @@ import '@vue-office/docx/lib/v3/index.css';
 import VueOfficeExcel from '@vue-office/excel/lib/v3/vue-office-excel.mjs';
 import '@vue-office/excel/lib/v3/index.css';
 import VueOfficePptx from '@vue-office/pptx/lib/v3/vue-office-pptx.mjs';
+import useFileStore from '../store/modules/fileStore';
 
 const ConversationStore = useConversationStore()
 
 const { ConversationsId } = storeToRefs(ConversationStore)
+const fileStore = useFileStore();
 
 const text = ref<string>('')
 const fileInfoList = ref([])
@@ -187,6 +189,7 @@ const sending = async () => {
   const HTTP = Talk(additional_messages)
   HTTP.then(async (res) => {
     // 创建一个可读流
+    fileStore.setFileInfoList(fileInfoList.value);
     const reader = res.body.getReader()
     const decoder = new TextDecoder('utf-8')
     //增加用户消息
@@ -203,6 +206,9 @@ const sending = async () => {
       processChunk(decoder.decode(value, { stream: true }))
       // 处理累积的消息内容
     }
+    // 在发送消息完成后清空 fileInfoList
+    fileInfoList.value = [];
+    fileStore.setFileInfoList([]);
   }).catch((err) => {
     console.log(err)
   })
@@ -275,7 +281,7 @@ const handleFileInfo = (fileInfo: any) => {
     fileInfo.content.type = 'file'; // 其他文件类型默认为 'file'
   }
 
-  fileInfoList.value.push(fileInfo);
+  fileInfoList.value.push(fileInfo)
 };
 
 // 处理文件上传状态更新
